@@ -22,7 +22,7 @@ return new class extends Migration
             $table->enum('jenis_kelamin',['L','P']);
             $table->string('hobi',128);
             $table->string('cita_cita',128);
-            $table->enum('status_anak',['Kandiung','Angkat']);
+            $table->enum('status_anak',['Kandung','Angkat']);
             $table->integer('jumlah_sdr');
             $table->integer('anak_ke');
             $table->text('alamat')->nullable();

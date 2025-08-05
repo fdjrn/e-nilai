@@ -111,7 +111,13 @@ class MengajarResource extends Resource
                 Forms\Components\TextInput::make('kkm')
                     ->label('Nilai KKM')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(100)
+                    ->extraAttributes([
+                        'onkeydown' => 'return /^[0-9]$/.test(event.key) || event.key === "Backspace" || event.key === "Tab" || event.key === "ArrowLeft" || event.key === "ArrowRight"',
+                        'inputmode' => 'numeric',
+                    ]),
             ]);
     }
 
