@@ -119,8 +119,7 @@ class SiswaResource extends Resource
                             ->native(false)
                             ->displayFormat('d/m/Y')
                             ->label('Tanggal Keluar')
-                            ->helperText('Tanggal / Bulan / Tahun')
-                            ->required(),
+                            ->helperText('Tanggal / Bulan / Tahun'),
                         Forms\Components\Select::make('status')
                             ->required()
                             ->options([
@@ -189,53 +188,54 @@ class SiswaResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('nis')
+                    ->label('NIS')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nisn')
+                    ->label('NISN')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nik')
+                    ->label('NIK')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nama')
+                    ->label('Nama')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tempat_lahir')
+                    ->label('Tempat Lahir')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tgl_lahir')
-                    ->date()
+                    ->label('Tanggal Lahir')
+                    ->date('d/m/Y')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('jenis_kelamin'),
+                Tables\Columns\TextColumn::make('jenis_kelamin')->alignCenter(),
                 Tables\Columns\TextColumn::make('hobi')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('cita_cita')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('status_anak'),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('jumlah_sdr')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('anak_ke')
                     ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('nik_ayah')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('nama_ayah')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('pend_ayah')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('pkr_ayah')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('nik_ibu')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('nama_ibu')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('pend_ibu')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('pkr_ibu')
-                    ->searchable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('tgl_masuk')
-                    ->date()
-                    ->sortable(),
+                    ->date('d/m/Y')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('tgl_keluar')
-                    ->date()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('status'),
+                    ->date('d/m/Y')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('status')
+                ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'Active' => 'success',
+                        'Inactive' => 'danger',
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
