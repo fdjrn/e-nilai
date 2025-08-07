@@ -9,6 +9,8 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -59,8 +61,8 @@ class TahunAkademikResource extends Resource
                     ->label('Semester')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
-                        'Ganjil' => 'warning',
-                        'Genap' => 'success',
+                        'GANJIL' => 'warning',
+                        'GENAP' => 'success',
                     })
                     ->sortable()
                     ->searchable(),
@@ -77,8 +79,22 @@ class TahunAkademikResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
-            ])
+                SelectFilter::make('tahun_akademik')
+                ->label('Tahun Akdemik')
+                ->options(function(){
+                    return TahunAkademik::query()
+                    ->select('tahun_akademik')
+                    ->distinct()
+                    ->pluck('tahun_akademik', 'tahun_akademik')
+                    ->toArray();
+                }),
+
+                SelectFilter::make('semester')
+                    ->options([
+                        'Ganjil' => 'GANJIL',
+                        'Genap' => 'GENAP'
+                    ]),
+            ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()->modalHeading('Delete Confirmation'),
