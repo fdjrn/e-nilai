@@ -8,6 +8,8 @@ use App\Models\Siswa;
 use Filament\Forms;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Split;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -22,7 +24,7 @@ class SiswaResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = "Siswa";
     protected static ?string $navigationGroup = 'Master Data';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
     protected static ?string $breadcrumb = "Siswa";
     protected static ?string $slug = 'siswa';
 
@@ -30,156 +32,170 @@ class SiswaResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Tabs::make('Tabs')
+                    ->columnSpanFull()
+                    ->contained(false)
+                    ->tabs([
+                        Tab::make('Data Diri Siswa')
+                            ->schema([
+                                Forms\Components\TextInput::make('nis')
+                                    ->label('NIS')
+                                    ->required()
+                                    ->maxLength(15),
+                                Forms\Components\TextInput::make('nisn')
+                                    ->label('NISN')
+                                    ->required()
+                                    ->maxLength(15),
+                                Forms\Components\TextInput::make('nik')
+                                    ->label('NIK')
+                                    ->required()
+                                    ->maxLength(25),
+                                Forms\Components\TextInput::make('nama')
+                                    ->label('Nama Siswa')
+                                    ->required()
+                                    ->maxLength(128),
+                                Forms\Components\TextInput::make('tempat_lahir')
+                                    ->label('Tempat Lahir')
+                                    ->required()
+                                    ->maxLength(128),
+                                Forms\Components\DatePicker::make('tgl_lahir')
+                                    ->native(false)
+                                    ->displayFormat('d/m/Y')
+                                    ->label('Tanggal Lahir')
+                                    ->helperText('Tanggal / Bulan / Tahun')
+                                    ->required(),
+                                Forms\Components\Select::make('jenis_kelamin')
+                                    ->label('Jenis Kelamin')
+                                    ->options([
+                                        'L' => 'Laki-Laki',
+                                        'P' => 'Perempuan'
+                                    ])
+                                    ->preload()
+                                    ->required(),
+                                Forms\Components\TextInput::make('hobi')
+                                    ->label('Hobi')
+                                    ->required()
+                                    ->maxLength(128),
+                                Forms\Components\TextInput::make('cita_cita')
+                                    ->label('Cita-Cita')
+                                    ->required()
+                                    ->maxLength(128),
+                                Forms\Components\Select::make('status_anak')
+                                    ->label('Status Anak')
+                                    ->options([
+                                        'Kandung' => 'Kandung',
+                                        'Angkat' => 'Angkat'
+                                    ])
+                                    ->preload()
+                                    ->required(),
+                                Forms\Components\TextInput::make('jumlah_sdr')
+                                    ->label('Jumlah Saudara')
+                                    ->required()
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->maxValue(100)
+                                    ->extraAttributes([
+                                        'onkeydown' => 'return /^[0-9]$/.test(event.key) || event.key === "Backspace" || event.key === "Tab" || event.key === "ArrowLeft" || event.key === "ArrowRight" || event.key === "ArrowUp" || event.key === "ArrowDown"',
+                                        'inputmode' => 'numeric',
+                                    ]),
+                                Forms\Components\TextInput::make('anak_ke')
+                                    ->label('Anak Ke')
+                                    ->required()
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->maxValue(100)
+                                    ->extraAttributes([
+                                        'onkeydown' => 'return /^[0-9]$/.test(event.key) || event.key === "Backspace" || event.key === "Tab" || event.key === "ArrowLeft" || event.key === "ArrowRight" || event.key === "ArrowUp" || event.key === "ArrowDown"',
+                                        'inputmode' => 'numeric',
+                                    ]),
+                                Forms\Components\Textarea::make('alamat')
+                                    ->label('Alamat')
+                                    ->rows(5)
+                                    ->columnSpanFull(),
 
-                Section::make('Data Diri Siswa')
-                    ->collapsible()
-                    ->schema([
-                        Forms\Components\TextInput::make('nis')
-                            ->label('NIS')
-                            ->required()
-                            ->maxLength(15),
-                        Forms\Components\TextInput::make('nisn')
-                            ->label('NISN')
-                            ->required()
-                            ->maxLength(15),
-                        Forms\Components\TextInput::make('nik')
-                            ->label('NIK')
-                            ->required()
-                            ->maxLength(25),
-                        Forms\Components\TextInput::make('nama')
-                            ->label('Nama Siswa')
-                            ->required()
-                            ->maxLength(128),
-                        Forms\Components\TextInput::make('tempat_lahir')
-                            ->label('Tempat Lahir')
-                            ->required()
-                            ->maxLength(128),
-                        Forms\Components\DatePicker::make('tgl_lahir')
-                            ->native(false)
-                            ->displayFormat('d/m/Y')
-                            ->label('Tanggal Lahir')
-                            ->helperText('Tanggal / Bulan / Tahun')
-                            ->required(),
-                        Forms\Components\Select::make('jenis_kelamin')
-                            ->label('Jenis Kelamin')
-                            ->options([
-                                'L' => 'Laki-Laki',
-                                'P' => 'Perempuan'
+                                Forms\Components\DatePicker::make('tgl_masuk')
+                                    ->native(false)
+                                    ->displayFormat('d/m/Y')
+                                    ->label('Tanggal Masuk')
+                                    ->helperText('Tanggal / Bulan / Tahun')
+                                    ->required(),
+                                Forms\Components\DatePicker::make('tgl_keluar')
+                                    ->native(false)
+                                    ->displayFormat('d/m/Y')
+                                    ->label('Tanggal Keluar')
+                                    ->helperText('Tanggal / Bulan / Tahun'),
+                                Forms\Components\Select::make('status')
+                                    ->required()
+                                    ->options([
+                                        'Active' => 'Aktif',
+                                        'Inactive' => 'Lulus'
+                                    ]),
                             ])
-                            ->preload()
-                            ->required(),
-                        Forms\Components\TextInput::make('hobi')
-                            ->label('Hobi')
-                            ->required()
-                            ->maxLength(128),
-                        Forms\Components\TextInput::make('cita_cita')
-                            ->label('Cita-Cita')
-                            ->required()
-                            ->maxLength(128),
-                        Forms\Components\Select::make('status_anak')
-                            ->label('Status Anak')
-                            ->options([
-                                'Kandung' => 'Kandung',
-                                'Angkat' => 'Angkat'
-                            ])
-                            ->preload()
-                            ->required(),
-                        Forms\Components\TextInput::make('jumlah_sdr')
-                            ->label('Jumlah Saudara')
-                            ->required()
-                            ->numeric()
-                            ->minValue(0)
-                            ->maxValue(100)
-                            ->extraAttributes([
-                                'onkeydown' => 'return /^[0-9]$/.test(event.key) || event.key === "Backspace" || event.key === "Tab" || event.key === "ArrowLeft" || event.key === "ArrowRight"',
-                                'inputmode' => 'numeric',
-                            ]),
-                        Forms\Components\TextInput::make('anak_ke')
-                            ->label('Anak Ke')
-                            ->required()
-                            ->numeric()
-                            ->minValue(0)
-                            ->maxValue(100)
-                            ->extraAttributes([
-                                'onkeydown' => 'return /^[0-9]$/.test(event.key) || event.key === "Backspace" || event.key === "Tab" || event.key === "ArrowLeft" || event.key === "ArrowRight"',
-                                'inputmode' => 'numeric',
-                            ]),
-                        Forms\Components\Textarea::make('alamat')
-                            ->label('Alamat')
-                            ->rows(5)
-                            ->columnSpanFull(),
+                            ->columns(2),
 
-                        Forms\Components\DatePicker::make('tgl_masuk')
-                            ->native(false)
-                            ->displayFormat('d/m/Y')
-                            ->label('Tanggal Masuk')
-                            ->helperText('Tanggal / Bulan / Tahun')
-                            ->required(),
-                        Forms\Components\DatePicker::make('tgl_keluar')
-                            ->native(false)
-                            ->displayFormat('d/m/Y')
-                            ->label('Tanggal Keluar')
-                            ->helperText('Tanggal / Bulan / Tahun'),
-                        Forms\Components\Select::make('status')
-                            ->required()
-                            ->options([
-                                'Active' => 'Aktif',
-                                'Inactive' => 'Lulus'
-                            ]),
-                    ])
-                    ->columns(2),
+                        Tab::make('Data Orang Tua')
+                            ->schema([
+                                Section::make('Data Ayah')
+                                    ->collapsible()
+                                    ->columns(2)
+                                    ->schema([
+                                        Forms\Components\TextInput::make('nik_ayah')
+                                            ->label('NIK')
+                                            ->required()
+                                            ->maxLength(25)
+                                            ->extraAttributes([
+                                                'onkeydown' => 'return /^[0-9]$/.test(event.key) || event.key === "Backspace" || event.key === "Tab" || event.key === "ArrowLeft" || event.key === "ArrowRight"',
+                                                'inputmode' => 'numeric',
+                                            ]),
+                                        Forms\Components\TextInput::make('nama_ayah')
+                                            ->label('Nama')
+                                            ->required()
+                                            ->maxLength(128),
+                                        Forms\Components\TextInput::make('pend_ayah')
+                                            ->label('Pendidikan')
+                                            ->required()
+                                            ->maxLength(50),
+                                        Forms\Components\TextInput::make('pkr_ayah')
+                                            ->label('Pekerjaan')
+                                            ->required()
+                                            ->maxLength(50),
+                                    ]),
 
+                                Section::make('Data Ibu')
+                                    ->collapsible()
+                                    ->collapsed()
+                                    ->columns(2)
+                                    ->schema([
+                                        Forms\Components\TextInput::make('nik_ibu')
+                                            ->label('NIK')
+                                            ->required()
+                                            ->maxLength(25)
+                                            ->extraAttributes([
+                                                'onkeydown' => 'return /^[0-9]$/.test(event.key) || event.key === "Backspace" || event.key === "Tab" || event.key === "ArrowLeft" || event.key === "ArrowRight"',
+                                                'inputmode' => 'numeric',
+                                            ]),
 
-                Section::make('Data Orang Tua')
-                    ->collapsible()
-                    ->collapsed()
-                    ->schema([
-                        Forms\Components\TextInput::make('nik_ayah')
-                            ->label('NIK Ayah')
-                            ->required()
-                            ->maxLength(25)
-                            ->extraAttributes([
-                                'onkeydown' => 'return /^[0-9]$/.test(event.key) || event.key === "Backspace" || event.key === "Tab" || event.key === "ArrowLeft" || event.key === "ArrowRight"',
-                                'inputmode' => 'numeric',
-                            ]),
-                        Forms\Components\TextInput::make('nama_ayah')
-                            ->label('Nama Ayah')
-                            ->required()
-                            ->maxLength(128),
-                        Forms\Components\TextInput::make('pend_ayah')
-                            ->label('Pendidikan Ayah')
-                            ->required()
-                            ->maxLength(50),
-                        Forms\Components\TextInput::make('pkr_ayah')
-                            ->label('Pekerjaan Ayah')
-                            ->required()
-                            ->maxLength(50),
-                        Forms\Components\TextInput::make('nik_ibu')
-                            ->label('NIK Ibu')
-                            ->required()
-                            ->maxLength(25)
-                            ->extraAttributes([
-                                'onkeydown' => 'return /^[0-9]$/.test(event.key) || event.key === "Backspace" || event.key === "Tab" || event.key === "ArrowLeft" || event.key === "ArrowRight"',
-                                'inputmode' => 'numeric',
-                            ]),
-                        Forms\Components\TextInput::make('nama_ibu')
-                            ->label('Nama Ibu')
-                            ->required()
-                            ->maxLength(128),
-                        Forms\Components\TextInput::make('pend_ibu')
-                            ->label('Pendidikan Ibu')
-                            ->required()
-                            ->maxLength(50),
-                        Forms\Components\TextInput::make('pkr_ibu')
-                            ->label('Pekerjaan Ibu')
-                            ->required()
-                            ->maxLength(50),
-                        Forms\Components\Textarea::make('alamat_ortu')
-                            ->label('Alamat Orang Tua')
-                            ->rows(5)
-                            ->columnSpanFull(),
+                                        Forms\Components\TextInput::make('nama_ibu')
+                                            ->label('Nama')
+                                            ->required()
+                                            ->maxLength(128),
+                                        Forms\Components\TextInput::make('pend_ibu')
+                                            ->label('Pendidikan')
+                                            ->required()
+                                            ->maxLength(50),
+                                        Forms\Components\TextInput::make('pkr_ibu')
+                                            ->label('Pekerjaan')
+                                            ->required()
+                                            ->maxLength(50),
 
-                    ])->columns(2),
+                                    ]),
+
+                                Forms\Components\Textarea::make('alamat_ortu')
+                                    ->label('Alamat Orang Tua')
+                                    ->rows(5)
+                                    ->columnSpanFull(),
+                            ]),
+                    ]),
             ]);
     }
 
@@ -231,7 +247,7 @@ class SiswaResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('status')
-                ->badge()
+                    ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         'Active' => 'success',
                         'Inactive' => 'danger',
