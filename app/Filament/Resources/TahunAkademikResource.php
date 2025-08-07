@@ -52,6 +52,7 @@ class TahunAkademikResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('tahun_akademik', 'asd')
             ->columns([
                 Tables\Columns\TextColumn::make('tahun_akademik')
                     ->label('Tahun Akademik')
@@ -84,6 +85,7 @@ class TahunAkademikResource extends Resource
                 ->options(function(){
                     return TahunAkademik::query()
                     ->select('tahun_akademik')
+                    ->orderBy('tahun_akademik', 'asc')
                     ->distinct()
                     ->pluck('tahun_akademik', 'tahun_akademik')
                     ->toArray();
