@@ -97,7 +97,12 @@ class SiswaResource extends Resource
                                     ->extraAttributes([
                                         'onkeydown' => 'return /^[0-9]$/.test(event.key) || event.key === "Backspace" || event.key === "Tab" || event.key === "ArrowLeft" || event.key === "ArrowRight" || event.key === "ArrowUp" || event.key === "ArrowDown"',
                                         'inputmode' => 'numeric',
+                                    ])
+                                    ->validationMessages([
+                                        'max' => 'Jumlah Saudara must be less than 100.',
+                                        'min' => 'Jumlah Saudara must be at least 0.',
                                     ]),
+
                                 Forms\Components\TextInput::make('anak_ke')
                                     ->label('Anak Ke')
                                     ->required()
@@ -107,6 +112,10 @@ class SiswaResource extends Resource
                                     ->extraAttributes([
                                         'onkeydown' => 'return /^[0-9]$/.test(event.key) || event.key === "Backspace" || event.key === "Tab" || event.key === "ArrowLeft" || event.key === "ArrowRight" || event.key === "ArrowUp" || event.key === "ArrowDown"',
                                         'inputmode' => 'numeric',
+                                    ])
+                                    ->validationMessages([
+                                        'max' => 'Anak Ke must be less than 100.',
+                                        'min' => 'Anak Ke must be at least 0.',
                                     ]),
                                 Forms\Components\Textarea::make('alamat')
                                     ->label('Alamat')
