@@ -43,8 +43,8 @@ class MengajarResource extends Resource
                     ->relationship(
                         name: 'tahunAkademik',
                         titleAttribute: 'tahun_akademik',
-                        modifyQueryUsing: fn ($query) => $query->orderBy('tahun_akademik', 'asc')
-                        )
+                        modifyQueryUsing: fn($query) => $query->orderBy('tahun_akademik', 'asc')
+                    )
                     ->getOptionLabelFromRecordUsing(fn($record) => "{$record->tahun_akademik_semester}")
                     ->required()
                     ->preload()
@@ -130,11 +130,11 @@ class MengajarResource extends Resource
                 fn(Builder $query) =>
                 $query
                     ->leftJoin('tahun_akademik as ta', 'mengajar.tahun_akademik_id', '=', 'ta.id')
-                    ->leftjoin('guru as gu', 'mengajar.guru_id', '=','gu.id')
-                    ->leftjoin('kelas as k', 'mengajar.kelas_id', '=','k.id')
-                    ->orderBy('ta.tahun_akademik','asc')
-                    ->orderBy('gu.nama','asc')
-                    ->orderBy('k.nama_kelas','asc')
+                    ->leftjoin('guru as gu', 'mengajar.guru_id', '=', 'gu.id')
+                    ->leftjoin('kelas as k', 'mengajar.kelas_id', '=', 'k.id')
+                    ->orderBy('ta.tahun_akademik', 'asc')
+                    ->orderBy('gu.nama', 'asc')
+                    ->orderBy('k.nama_kelas', 'asc')
                     ->orderBy('mengajar.semester', 'asc')
                     ->select('mengajar.*')
             )
@@ -199,6 +199,27 @@ class MengajarResource extends Resource
                         'Ganjil' => 'GANJIL',
                         'Genap' => 'GENAP'
                     ]),
+
+                SelectFilter::make('kelas')
+                    ->label('Kelas')
+                    ->options(function () {
+                        return \App\Models\Kelas::query()
+                            ->select('kode_kelas')
+                            ->distinct()
+                            ->orderBy('kode_kelas', 'asc')
+                            ->pluck('kode_kelas', 'kode_kelas'); // key => label
+                    })
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (! $data['value']) {
+                            return $query;
+                        }
+
+                        return $query->whereHas('kelas', function ($q) use ($data) {
+                            $q->where('kode_kelas', $data['value']);
+                        });
+                    })
+                    ->searchable()
+                    ->preload(),
             ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\EditAction::make(),
