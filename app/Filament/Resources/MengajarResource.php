@@ -2,17 +2,26 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\MengajarResource\Pages;
-use App\Filament\Resources\MengajarResource\RelationManagers;
-use App\Models\Mengajar;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Get;
+use App\Models\Mengajar;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\TahunAkademik;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\MengajarResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\MengajarResource\RelationManagers;
+use App\Models\MataPelajaran;
+use Filament\Forms\Components\Hidden;
+use Filament\Tables\Filters\QueryBuilder;
+use Filament\Tables\Filters\QueryBuilder\Constraints\SelectConstraint;
+use Illuminate\Support\Facades\Log;
 
 class MengajarResource extends Resource
 {
@@ -29,34 +38,33 @@ class MengajarResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('tahun_akademik_id')
+                Select::make('tahun_akademik_id')
                     ->label('Tahun Akademik')
-                    ->relationship('tahunAkademik', 'tahun_akademik')
-                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->tahun_akademik} - {$record->semester}")
+                    ->relationship(
+                        name: 'tahunAkademik',
+                        titleAttribute: 'tahun_akademik',
+                        modifyQueryUsing: fn ($query) => $query->orderBy('tahun_akademik', 'asc')
+                        )
+                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->tahun_akademik_semester}")
                     ->required()
                     ->preload()
                     ->reactive()
                     ->afterStateUpdated(function ($state, callable $set) {
                         $ta = \App\Models\TahunAkademik::find($state);
                         if ($ta) {
-                            $set('semester', $ta->semester); // isi field semester di form
+                            $set('semester', ucfirst($ta->semester)); // isi field semester di form
                         } else {
                             $set('semester', null);
                         }
-                    }),
+                    })->columnSpanFull(),
 
-                Forms\Components\TextInput::make('semester')
-                    ->label('Semester')
-                    ->disabled()
-                    ->required()
-                    ->reactive(),
+                Hidden::make('semester'),
 
                 Forms\Components\Select::make('guru_id')
                     ->label('Guru Pengajar')
                     ->relationship('guru', 'nama')
                     ->required()
-                    ->preload()
-                    ->reactive(),
+                    ->preload(),
 
                 Forms\Components\Select::make('mapel_id')
                     ->label('Mata Pelajaran')
@@ -67,34 +75,27 @@ class MengajarResource extends Resource
                     ->rules([
                         function (Get $get) {
                             return function (string $attribute, $value, \Closure $fail) use ($get) {
-                                $guru = $get('guru_id');
                                 $mapel = $value;
                                 $kelas = $get('kelas_id');
                                 $tahun = $get('tahun_akademik_id');
                                 $semester = $get('semester');
 
-                                if (! $guru || ! $mapel || ! $kelas || ! $semester) {
+                                if ($mapel || ! $kelas || ! $semester || !$tahun) {
                                     return;
                                 }
 
                                 $query = Mengajar::query()
-                                    ->where('guru_id', $guru)
+                                    ->where('tahun_akademik_id', $tahun)
                                     ->where('mapel_id', $mapel)
                                     ->where('kelas_id', $kelas)
                                     ->where('semester', $semester);
-
-                                if ($tahun) {
-                                    $query->where('tahun_akademik_id', $tahun);
-                                } else {
-                                    $query->whereNull('tahun_akademik_id');
-                                }
 
                                 if ($recordId = request()->route('record')) {
                                     $query->where('id', '!=', $recordId);
                                 }
 
                                 if ($query->exists()) {
-                                    $fail('Penugasan guru untuk mata pelajaran ini di kelas, tahun akademik dan semester yang dipilih sudah ada.');
+                                    $fail('duplicate entry');
                                 }
                             };
                         },
@@ -115,7 +116,7 @@ class MengajarResource extends Resource
                     ->minValue(0)
                     ->maxValue(100)
                     ->extraAttributes([
-                        'onkeydown' => 'return /^[0-9]$/.test(event.key) || event.key === "Backspace" || event.key === "Tab" || event.key === "ArrowLeft" || event.key === "ArrowRight"',
+                        'onkeydown' => 'return /^[0-9]$/.test(event.key) || event.key === "Backspace" || event.key === "Tab" || event.key === "ArrowLeft" || event.key === "ArrowRight" || event.key === "ArrowUp" || event.key === "ArrowDown"',
                         'inputmode' => 'numeric',
                     ]),
             ]);
@@ -124,10 +125,28 @@ class MengajarResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            // ->defaultSort('tahunAkademik.tahun_akademik', 'asc')
+            ->modifyQueryUsing(
+                fn(Builder $query) =>
+                $query
+                    ->leftJoin('tahun_akademik as ta', 'mengajar.tahun_akademik_id', '=', 'ta.id')
+                    ->leftjoin('guru as gu', 'mengajar.guru_id', '=','gu.id')
+                    ->leftjoin('kelas as k', 'mengajar.kelas_id', '=','k.id')
+                    ->orderBy('ta.tahun_akademik','asc')
+                    ->orderBy('gu.nama','asc')
+                    ->orderBy('k.nama_kelas','asc')
+                    ->orderBy('mengajar.semester', 'asc')
+                    ->select('mengajar.*')
+            )
             ->columns([
-                Tables\Columns\TextColumn::make('tahunAkademik.tahun_akademik_semester')
+                Tables\Columns\TextColumn::make('tahunAkademik.tahun_akademik')
                     ->label('Tahun Akademik')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('semester')
+                    ->label('Semester')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('guru.nama')->label('Nama Guru')
                     ->sortable()
                     ->searchable(),
@@ -139,6 +158,7 @@ class MengajarResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false),
+
                 Tables\Columns\TextColumn::make('kkm')
                     ->label('KKM')
                     ->sortable()
@@ -153,8 +173,33 @@ class MengajarResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
-            ])
+                SelectFilter::make('tahun_akademik')
+                    ->label('Tahun Akademik')
+                    ->options(function () {
+                        return \App\Models\TahunAkademik::query()
+                            ->select('tahun_akademik')
+                            ->distinct()
+                            ->orderBy('tahun_akademik', 'asc')
+                            ->pluck('tahun_akademik', 'tahun_akademik'); // key => label
+                    })
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (! $data['value']) {
+                            return $query;
+                        }
+
+                        return $query->whereHas('tahunAkademik', function ($q) use ($data) {
+                            $q->where('tahun_akademik', $data['value']);
+                        });
+                    })
+                    ->searchable()
+                    ->preload(),
+
+                SelectFilter::make('semester')
+                    ->options([
+                        'Ganjil' => 'GANJIL',
+                        'Genap' => 'GENAP'
+                    ]),
+            ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()->modalHeading('Delete Confirmation'),

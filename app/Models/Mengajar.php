@@ -10,6 +10,7 @@ class Mengajar extends Model
 
     protected $fillable = [
         'tahun_akademik_id',
+        'semester',
         'guru_id',
         'mapel_id',
         'kelas_id',
@@ -20,6 +21,16 @@ class Mengajar extends Model
     {
         return $this->belongsTo(TahunAkademik::class);
     }
+
+    public function getSemesterAttribute(): string
+    {
+        return strtoupper($this->attributes['semester']);
+    }
+
+    // public function setSemesterAttribute(): string
+    // {
+        // return ucfirst($this->attributes['semester']);
+    // }
 
     public function guru()
     {

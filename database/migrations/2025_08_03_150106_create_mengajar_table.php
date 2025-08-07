@@ -26,10 +26,11 @@ return new class extends Migration
 
             $table->unique([
                 'tahun_akademik_id',
-                'guru_id',
                 'mapel_id',
+                'semester',
                 'kelas_id'
-            ],'uniq_mengajar');
+            ],'mapel_assignment_unique');
+
         });
     }
 
