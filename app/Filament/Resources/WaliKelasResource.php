@@ -14,8 +14,6 @@ use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\WaliKelasResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\WaliKelasResource\RelationManagers;
 use App\Models\TahunAkademik;
 use Filament\Forms\Get;
 use Filament\Tables\Columns\TextColumn;
@@ -105,9 +103,7 @@ class WaliKelasResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            // ->defaultSort('tahun_akademik', 'asc')
-            // ->defaultSort('semester', 'asc')
-            // ->defaultSort('kelas_id', 'asc')
+
             ->columns([
                 TextColumn::make('tahunAkademik.tahun_akademik')
                     ->label('Tahun Akademik')
@@ -121,11 +117,10 @@ class WaliKelasResource extends Resource
                     )
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('kelas.kode_nama_kelas')
-                    ->label('Kelas')
-                    // ->sortable()
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+                // TextColumn::make('kelas.kode_nama_kelas')
+                //     ->label('Kelas')
+                //     ->searchable()
+                //     ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('guru.nama')
                     ->label('Wali Kelas')
                     ->sortable()
@@ -145,14 +140,7 @@ class WaliKelasResource extends Resource
             ->filters([
                 SelectFilter::make('tahun_akademik')
                     ->label('Tahun Akademik')
-                    ->options(function () {
-                        return TahunAkademik::query()
-                            ->select('tahun_akademik')
-                            ->where('is_active', 1)
-                            ->distinct()
-                            ->orderBy('tahun_akademik', 'asc')
-                            ->pluck('tahun_akademik', 'tahun_akademik');
-                    })
+                    ->options(fn() => TahunAkademik::getListTahunAkademik())
                     ->default(fn() => TahunAkademik::getDefaultTahunAkademik())
                     ->query(function (Builder $query, array $data): Builder {
                         if (! $data['value']) {
@@ -168,15 +156,8 @@ class WaliKelasResource extends Resource
 
                 SelectFilter::make('wali_kelas.semester')
                     ->label('Semester')
-                    ->options(function () {
-                        return TahunAkademik::query()
-                            ->select('semester')
-                            ->where('is_active', 1)
-                            ->distinct()
-                            ->orderBy('semester', 'asc')
-                            ->pluck('semester', 'semester');
-                    })
-                    ->default('Ganjil')
+                    ->options(fn() => TahunAkademik::getListSemester())
+                    ->default(fn() => TahunAkademik::getDefaultSemester())
                     ->query(function (Builder $query, array $data): Builder {
                         if (! $data['value']) {
                             return $query;

@@ -37,6 +37,25 @@ class TahunAkademik extends Model
             ->pluck('tahun_akademik', 'tahun_akademik');
     }
 
+
+    public static function getDefaultSemester(): ?string
+    {
+        return static::select('semester')
+            ->where('is_active', 1)
+            ->distinct()
+            ->orderBy('semester', 'asc')
+            ->value('semester');
+    }
+
+    public static function getListSemester()
+    {
+        return static::select('semester')
+            ->where('is_active', 1)
+            ->distinct()
+            ->orderBy('semester', 'asc')
+            ->pluck('semester', 'semester');
+    }
+
     public function getSemesterAttribute(): string
     {
         return strtoupper($this->attributes['semester']);
