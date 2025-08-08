@@ -13,7 +13,7 @@ class Kelas extends Model
         'nama_kelas',
     ];
 
-    public function getKodeNamaKelasAttribute():string
+    public function getKodeNamaKelasAttribute(): string
     {
         return "{$this->kode_kelas} - {$this->nama_kelas}";
     }
@@ -21,6 +21,11 @@ class Kelas extends Model
     public function mengajar()
     {
         return $this->hasMany(Mengajar::class);
+    }
+
+    public function rombel()
+    {
+        return $this->hasMany(Rombel::class);
     }
 
     // Guru-guru yang mengajar di kelas ini (unik secara logika bisa di-`->distinct()` di query)

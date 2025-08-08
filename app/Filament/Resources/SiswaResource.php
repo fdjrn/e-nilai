@@ -28,6 +28,9 @@ class SiswaResource extends Resource
     protected static ?string $breadcrumb = "Siswa";
     protected static ?string $slug = 'siswa';
 
+    const DATE_HELPER_TEXT = 'Tanggal / Bulan / Tahun';
+    const DATE_FORMAT = 'd/m/Y';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -60,9 +63,9 @@ class SiswaResource extends Resource
                                     ->maxLength(128),
                                 Forms\Components\DatePicker::make('tgl_lahir')
                                     ->native(false)
-                                    ->displayFormat('d/m/Y')
+                                    ->displayFormat(self::DATE_FORMAT)
                                     ->label('Tanggal Lahir')
-                                    ->helperText('Tanggal / Bulan / Tahun')
+                                    ->helperText(self::DATE_HELPER_TEXT)
                                     ->required(),
                                 Forms\Components\Select::make('jenis_kelamin')
                                     ->label('Jenis Kelamin')
@@ -124,15 +127,15 @@ class SiswaResource extends Resource
 
                                 Forms\Components\DatePicker::make('tgl_masuk')
                                     ->native(false)
-                                    ->displayFormat('d/m/Y')
+                                    ->displayFormat(self::DATE_FORMAT)
                                     ->label('Tanggal Masuk')
-                                    ->helperText('Tanggal / Bulan / Tahun')
+                                    ->helperText(self::DATE_HELPER_TEXT)
                                     ->required(),
                                 Forms\Components\DatePicker::make('tgl_keluar')
                                     ->native(false)
-                                    ->displayFormat('d/m/Y')
+                                    ->displayFormat(self::DATE_FORMAT)
                                     ->label('Tanggal Keluar')
-                                    ->helperText('Tanggal / Bulan / Tahun'),
+                                    ->helperText(self::DATE_HELPER_TEXT),
                                 Forms\Components\Select::make('status')
                                     ->required()
                                     ->options([
@@ -229,7 +232,7 @@ class SiswaResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tgl_lahir')
                     ->label('Tanggal Lahir')
-                    ->date('d/m/Y')
+                    ->date(self::DATE_FORMAT)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('jenis_kelamin')->alignCenter(),
                 Tables\Columns\TextColumn::make('hobi')
@@ -248,11 +251,11 @@ class SiswaResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('tgl_masuk')
-                    ->date('d/m/Y')
+                    ->date(self::DATE_FORMAT)
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('tgl_keluar')
-                    ->date('d/m/Y')
+                    ->date(self::DATE_FORMAT)
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('status')

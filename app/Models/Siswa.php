@@ -35,4 +35,9 @@ class Siswa extends Model
         'tgl_keluar',
         'status',
     ];
+
+    public function rombel()
+    {
+        return $this->hasMany(Rombel::class);
+    }
 }

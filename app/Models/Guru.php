@@ -29,6 +29,11 @@ class Guru extends Model
     }
 
 
+    public function getNamaWaliKelasAttribute(): string
+    {
+        return "{$this->nama}";
+    }
+
     // 1 Guru bisa mengajar beberapa Mata Pelajaran yang diajarkan
     public function guru()
     {
@@ -38,6 +43,11 @@ class Guru extends Model
     public function mengajar()
     {
         return $this->hasMany(Mengajar::class);
+    }
+
+    public function rombel()
+    {
+        return $this->hasMany(Rombel::class);
     }
 
     // Mata pelajaran yang diajarkan (bisa duplicate, panggil ->distinct('id') kalau perlu unik)
