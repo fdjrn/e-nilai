@@ -24,7 +24,7 @@ return new class extends Migration
                 'wali_kelas_id',
                 'siswa_id',
                 'kelas_id'
-            ],'uniq_mengajar');
+            ],'rombel_unique');
 
         });
     }

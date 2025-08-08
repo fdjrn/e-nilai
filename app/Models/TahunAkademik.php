@@ -20,6 +20,23 @@ class TahunAkademik extends Model
         return "{$this->tahun_akademik} / {$this->semester}";
     }
 
+    public static function getDefaultTahunAkademik(): ?string
+    {
+        return static::where('is_active', 1)
+            ->distinct()
+            ->orderBy('tahun_akademik', 'asc')
+            ->value('tahun_akademik');
+    }
+
+    public static function getListTahunAkademik()
+    {
+        return static::select('tahun_akademik')
+            ->where('is_active', 1)
+            ->distinct()
+            ->orderBy('tahun_akademik', 'asc')
+            ->pluck('tahun_akademik', 'tahun_akademik');
+    }
+
     public function getSemesterAttribute(): string
     {
         return strtoupper($this->attributes['semester']);
