@@ -27,11 +27,6 @@ class Mengajar extends Model
         return strtoupper($this->attributes['semester']);
     }
 
-    // public function setSemesterAttribute(): string
-    // {
-        // return ucfirst($this->attributes['semester']);
-    // }
-
     public function guru()
     {
         return $this->belongsTo(Guru::class);

@@ -8,6 +8,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\MengajarResource;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\ValidationException;
 
 class EditMengajar extends EditRecord
 {
@@ -32,13 +33,14 @@ class EditMengajar extends EditRecord
         } catch (QueryException $e) {
             if (isset($e->errorInfo[1]) && $e->errorInfo[1] === 1062) {
                 Notification::make()
-                    ->title('Duplikat Penugasan')
-                    ->body('Kombinasi guru, mata pelajaran, kelas, tahun akademik, dan semester sudah ada.')
+                    ->title('Duplikasi Data')
+                    ->body('Kombinasi Mata Pelajaran, Kelas, Tahun Akademik, dan Semester sudah dibuat.')
                     ->danger()
                     ->send();
 
-                // kembalikan record asal tanpa perubahan supaya form tetap terbuka
-                return $record;
+                throw ValidationException::withMessages([
+                    'err' => 'Kombinasi tersebut sudah ada.',
+                ]);
             }
 
             throw $e;
