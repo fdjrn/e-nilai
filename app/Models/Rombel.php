@@ -22,7 +22,7 @@ class Rombel extends Model
 
     public function waliKelas()
     {
-        return $this->belongsTo(Guru::class);
+        return $this->belongsTo(WaliKelas::class);
     }
 
     public function Siswa()

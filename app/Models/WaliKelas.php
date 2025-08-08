@@ -36,4 +36,9 @@ class WaliKelas extends Model
     {
         return $this->belongsTo(Kelas::class);
     }
+
+    public function rombel()
+    {
+        return $this->hasMany(Rombel::class);
+    }
 }

@@ -13,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Validation\ValidationException;
 
 class RombelResource extends Resource
 {
@@ -32,46 +33,36 @@ class RombelResource extends Resource
             ->schema([
                 Select::make('tahun_akademik_id')
                     ->label('Tahun Akademik')
-                    ->relationship('tahunAkademik', 'tahun_akademik')
-                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->tahun_akademik} - {$record->semester}")
+                    ->relationship(
+                        name: 'tahunAkademik',
+                        titleAttribute: 'tahun_akademik',
+                        modifyQueryUsing: fn($query) => $query
+                        ->where('is_active', 1)
+                        ->orderBy('tahun_akademik', 'asc')
+                    )
+                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->tahun_akademik_semester}")
                     ->required()
-                    ->preload()
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, callable $set) {
-                        $ta = \App\Models\TahunAkademik::find($state);
-                        if ($ta) {
-                            $set('semester', $ta->semester); // isi field semester di form
-                        } else {
-                            $set('semester', null);
-                        }
-                    }),
+                    ->preload(),
                 Select::make('wali_kelas_id')
                     ->label('Wali Kelas')
-                    ->relationship('waliKelas', 'nama')
+                    ->relationship('waliKelas', 'id')
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->guru->nama ?? "-")
                     ->required()
-                    ->preload()
-                    ->reactive(),
+                    ->preload(),
+                    // ->reactive(),
                 Select::make('kelas_id')
                     ->label('Kelas')
                     ->relationship('kelas', 'nama_kelas')
                     ->getOptionLabelFromRecordUsing(fn($record) => "{$record->kode_kelas} - {$record->nama_kelas}")
                     ->required()
-                    ->preload()
-                    ->reactive(),
-                    // ->afterStateUpdated(function ($state, callable $set) {
-                    //     $kelas = \App\Models\Kelas::find($state);
-                    //     if ($kelas) {
-                    //         $set('semester', $ta->semester); // isi field semester di form
-                    //     } else {
-                    //         $set('semester', null);
-                    //     }
-                    // }),
+                    ->preload(),
+                    // ->reactive(),
                 Select::make('siswa_id')
                     ->label('Siswa')
                     ->relationship('siswa', 'nama')
                     ->required()
-                    ->preload()
-                    ->reactive(),
+                    ->preload(),
+                    // ->reactive(),
             ]);
     }
 
@@ -82,17 +73,14 @@ class RombelResource extends Resource
                 Tables\Columns\TextColumn::make('tahunAkademik.tahun_akademik_semester')
                     ->label('Tahun Akademik')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('guru.wali_kelas')
+                Tables\Columns\TextColumn::make('waliKelas.guru.nama')
                     ->label('Wali Kelas')
-                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('kelas.kode_nama_kelas')
                     ->label('Kelas')
-                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('siswa.nama')
                     ->label('Nama Siswa')
-                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -132,4 +120,30 @@ class RombelResource extends Resource
             'edit' => Pages\EditRombel::route('/{record}/edit'),
         ];
     }
+
+    public static function beforeCreate(array $data): array
+{
+    static::validateUniqueRombel($data);
+    return $data;
+}
+
+public static function beforeUpdate($record, array $data): array
+{
+    static::validateUniqueRombel($data, $record->id);
+    return $data;
+}
+
+protected static function validateUniqueRombel(array $data, ?int $ignoreId = null): void
+{
+    $exists = Rombel::where('siswa_id', $data['siswa_id'])
+        ->where('tahun_akademik_id', $data['tahun_akademik_id'])
+        ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
+        ->exists();
+
+    if ($exists) {
+        throw ValidationException::withMessages([
+            'siswa_id' => 'Siswa ini sudah terdaftar dalam rombel untuk tahun akademik tersebut.',
+        ]);
+    }
+}
 }
