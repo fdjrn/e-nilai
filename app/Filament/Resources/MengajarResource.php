@@ -8,20 +8,13 @@ use Filament\Forms\Get;
 use App\Models\Mengajar;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use App\Models\TahunAkademik;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\MengajarResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\MengajarResource\RelationManagers;
-use App\Models\MataPelajaran;
 use Filament\Forms\Components\Hidden;
-use Filament\Tables\Filters\QueryBuilder;
-use Filament\Tables\Filters\QueryBuilder\Constraints\SelectConstraint;
-use Illuminate\Support\Facades\Log;
 
 class MengajarResource extends Resource
 {
@@ -43,7 +36,9 @@ class MengajarResource extends Resource
                     ->relationship(
                         name: 'tahunAkademik',
                         titleAttribute: 'tahun_akademik',
-                        modifyQueryUsing: fn($query) => $query->orderBy('tahun_akademik', 'asc')
+                        modifyQueryUsing: fn($query) => $query
+                        ->where('is_active', 1)
+                        ->orderBy('tahun_akademik', 'asc')
                     )
                     ->getOptionLabelFromRecordUsing(fn($record) => "{$record->tahun_akademik_semester}")
                     ->required()
@@ -125,19 +120,7 @@ class MengajarResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            // ->defaultSort('tahunAkademik.tahun_akademik', 'asc')
-            ->modifyQueryUsing(
-                fn(Builder $query) =>
-                $query
-                    ->leftJoin('tahun_akademik as ta', 'mengajar.tahun_akademik_id', '=', 'ta.id')
-                    ->leftjoin('guru as gu', 'mengajar.guru_id', '=', 'gu.id')
-                    ->leftjoin('kelas as k', 'mengajar.kelas_id', '=', 'k.id')
-                    ->orderBy('ta.tahun_akademik', 'asc')
-                    ->orderBy('gu.nama', 'asc')
-                    ->orderBy('k.nama_kelas', 'asc')
-                    ->orderBy('mengajar.semester', 'asc')
-                    ->select('mengajar.*')
-            )
+
             ->columns([
                 Tables\Columns\TextColumn::make('tahunAkademik.tahun_akademik')
                     ->label('Tahun Akademik')
