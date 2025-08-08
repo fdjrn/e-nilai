@@ -39,7 +39,7 @@ class SiswaResource extends Resource
                     ->columnSpanFull()
                     ->contained(false)
                     ->tabs([
-                        Tab::make('Data Diri Siswa')
+                        Tab::make('Data Induk')
                             ->schema([
                                 Forms\Components\TextInput::make('nis')
                                     ->label('NIS')
@@ -49,14 +49,11 @@ class SiswaResource extends Resource
                                     ->label('NISN')
                                     ->required()
                                     ->maxLength(15),
-                                Forms\Components\TextInput::make('nik')
-                                    ->label('NIK')
-                                    ->required()
-                                    ->maxLength(25),
                                 Forms\Components\TextInput::make('nama')
                                     ->label('Nama Siswa')
                                     ->required()
                                     ->maxLength(128),
+
                                 Forms\Components\TextInput::make('tempat_lahir')
                                     ->label('Tempat Lahir')
                                     ->required()
@@ -75,6 +72,40 @@ class SiswaResource extends Resource
                                     ])
                                     ->preload()
                                     ->required(),
+
+                                Forms\Components\Textarea::make('alamat')
+                                    ->label('Alamat')
+                                    ->rows(5)
+                                    ->columnSpanFull(),
+
+                                Forms\Components\DatePicker::make('tgl_masuk')
+                                    ->native(false)
+                                    ->displayFormat(self::DATE_FORMAT)
+                                    ->label('Tanggal Masuk')
+                                    ->helperText(self::DATE_HELPER_TEXT)
+                                    ->required(),
+                                Forms\Components\DatePicker::make('tgl_keluar')
+                                    ->native(false)
+                                    ->displayFormat(self::DATE_FORMAT)
+                                    ->label('Tanggal Keluar')
+                                    ->helperText(self::DATE_HELPER_TEXT),
+                                Forms\Components\Select::make('status')
+                                    ->required()
+                                    ->options([
+                                        'Active' => 'Aktif',
+                                        'Inactive' => 'Lulus'
+                                    ]),
+                            ])
+                            ->columns(3),
+
+                        Tab::make('Data Lainnya')
+                            ->schema([
+
+                                Forms\Components\TextInput::make('nik')
+                                    ->label('NIK')
+                                    ->required()
+                                    ->maxLength(25),
+
                                 Forms\Components\TextInput::make('hobi')
                                     ->label('Hobi')
                                     ->required()
@@ -120,30 +151,26 @@ class SiswaResource extends Resource
                                         'max' => 'Anak Ke must be less than 100.',
                                         'min' => 'Anak Ke must be at least 0.',
                                     ]),
-                                Forms\Components\Textarea::make('alamat')
-                                    ->label('Alamat')
-                                    ->rows(5)
-                                    ->columnSpanFull(),
 
-                                Forms\Components\DatePicker::make('tgl_masuk')
-                                    ->native(false)
-                                    ->displayFormat(self::DATE_FORMAT)
-                                    ->label('Tanggal Masuk')
-                                    ->helperText(self::DATE_HELPER_TEXT)
-                                    ->required(),
-                                Forms\Components\DatePicker::make('tgl_keluar')
-                                    ->native(false)
-                                    ->displayFormat(self::DATE_FORMAT)
-                                    ->label('Tanggal Keluar')
-                                    ->helperText(self::DATE_HELPER_TEXT),
-                                Forms\Components\Select::make('status')
-                                    ->required()
-                                    ->options([
-                                        'Active' => 'Aktif',
-                                        'Inactive' => 'Lulus'
-                                    ]),
+                                // Forms\Components\DatePicker::make('tgl_masuk')
+                                //     ->native(false)
+                                //     ->displayFormat(self::DATE_FORMAT)
+                                //     ->label('Tanggal Masuk')
+                                //     ->helperText(self::DATE_HELPER_TEXT)
+                                //     ->required(),
+                                // Forms\Components\DatePicker::make('tgl_keluar')
+                                //     ->native(false)
+                                //     ->displayFormat(self::DATE_FORMAT)
+                                //     ->label('Tanggal Keluar')
+                                //     ->helperText(self::DATE_HELPER_TEXT),
+                                // Forms\Components\Select::make('status')
+                                //     ->required()
+                                //     ->options([
+                                //         'Active' => 'Aktif',
+                                //         'Inactive' => 'Lulus'
+                                //     ]),
                             ])
-                            ->columns(2),
+                            ->columns(3),
 
                         Tab::make('Data Orang Tua')
                             ->schema([
