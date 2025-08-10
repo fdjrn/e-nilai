@@ -59,7 +59,7 @@ class TahunAkademikResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('tahun_akademik', 'asd')
+            ->defaultSort('tahun_akademik', 'asc')
             ->columns([
                 TextColumn::make('index')
                     ->label('No.')
