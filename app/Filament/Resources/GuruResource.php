@@ -34,6 +34,7 @@ class GuruResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
+            ->columns(3)
             ->schema([
                 TextInput::make('nip')
                     ->label('NIP')
@@ -44,7 +45,8 @@ class GuruResource extends Resource
                 TextInput::make('nama')
                     ->label('Nama')
                     ->required()
-                    ->maxLength(128),
+                    ->maxLength(128)
+                    ->columnSpan(2),
                 TextInput::make('tempat_lahir')
                     ->label('Tempat Lahir')
                     ->required()
@@ -93,14 +95,6 @@ class GuruResource extends Resource
                         query: fn($query, $direction) =>
                         $query->orderByRaw("CONCAT(tempat_lahir, ' ', tgl_lahir) {$direction}")
                     ),
-                // TextColumn::make('tempat_lahir')
-                //     ->label('Tempat Lahir')
-                //     ->searchable()
-                //     ->sortable(),
-                // TextColumn::make('tgl_lahir')
-                //     ->label('Tgl. Lahir')
-                //     ->date()
-                //     ->sortable(),
                 TextColumn::make('jenis_kelamin')
                     ->sortable()
                     ->alignCenter(),
