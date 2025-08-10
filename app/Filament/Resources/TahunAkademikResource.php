@@ -6,14 +6,21 @@ use App\Filament\Resources\TahunAkademikResource\Pages;
 use App\Filament\Resources\TahunAkademikResource\RelationManagers;
 use App\Models\TahunAkademik;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use stdClass;
 
 class TahunAkademikResource extends Resource
 {
@@ -32,11 +39,11 @@ class TahunAkademikResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('tahun_akademik')
+                TextInput::make('tahun_akademik')
                     ->label(self::RESOURCE_LABEL)
                     ->required()
                     ->maxLength(10),
-                Forms\Components\Select::make('semester')
+                Select::make('semester')
                     ->label('Semester')
                     ->options([
                         'Ganjil' => 'GANJIL',
@@ -44,7 +51,7 @@ class TahunAkademikResource extends Resource
                     ])
                     ->preload()
                     ->required(),
-                Forms\Components\Toggle::make('is_active')
+                Toggle::make('is_active')
                     ->label('Semester Aktif'),
             ]);
     }
@@ -54,11 +61,19 @@ class TahunAkademikResource extends Resource
         return $table
             ->defaultSort('tahun_akademik', 'asd')
             ->columns([
-                Tables\Columns\TextColumn::make('tahun_akademik')
+                TextColumn::make('index')
+                    ->label('No.')
+                    ->state(static function (HasTable $livewire, stdClass $rowLoop): string {
+                        return (string) (
+                            $rowLoop->iteration +
+                            ($livewire->getTableRecordsPerPage() * ($livewire->getTablePage() - 1))
+                        );
+                    }),
+                TextColumn::make('tahun_akademik')
                     ->label('Tahun Akademik')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('semester')
+                TextColumn::make('semester')
                     ->label('Semester')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
@@ -67,14 +82,14 @@ class TahunAkademikResource extends Resource
                     })
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\ToggleColumn::make('is_active')
+                ToggleColumn::make('is_active')
                     ->disabled()
                     ->label('Aktif'),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -96,6 +111,13 @@ class TahunAkademikResource extends Resource
                         'Ganjil' => 'GANJIL',
                         'Genap' => 'GENAP'
                     ]),
+
+                SelectFilter::make('is_active')
+                    ->label('Status')
+                    ->options([
+                        0 => 'NON AKTIF',
+                        1 => 'AKTIF',
+                    ])->default(1),
             ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\EditAction::make(),

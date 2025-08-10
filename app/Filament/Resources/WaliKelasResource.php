@@ -17,6 +17,8 @@ use App\Filament\Resources\WaliKelasResource\Pages;
 use App\Models\TahunAkademik;
 use Filament\Forms\Get;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
+use stdClass;
 
 class WaliKelasResource extends Resource
 {
@@ -105,6 +107,15 @@ class WaliKelasResource extends Resource
         return $table
 
             ->columns([
+                TextColumn::make('index')
+                    ->label('No.')
+                    ->state(static function (HasTable $livewire, stdClass $rowLoop): string {
+                        return (string) (
+                            $rowLoop->iteration +
+                            ($livewire->getTableRecordsPerPage() * ($livewire->getTablePage() - 1))
+                        );
+                    }),
+
                 TextColumn::make('tahunAkademik.tahun_akademik')
                     ->label('Tahun Akademik')
                     ->sortable()
