@@ -2,6 +2,11 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\GuruResource\Widgets\JumlahGuru;
+use App\Filament\Resources\KelasResource\Widgets\JumlahKelas;
+use App\Filament\Resources\SiswaResource\Widgets\JumlahSiswa;
+use App\Filament\Widgets\AccountWidget;
+use App\Filament\Widgets\AdminWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -37,8 +42,13 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                AccountWidget::class,
+                // Widgets\AccountWidget::class,
+                AdminWidget::class,
+                // JumlahGuru::class,
+                // JumlahSiswa::class,
+                // JumlahKelas::class
+                // Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
