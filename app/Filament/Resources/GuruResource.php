@@ -6,12 +6,19 @@ use App\Filament\Resources\GuruResource\Pages;
 use App\Filament\Resources\GuruResource\RelationManagers;
 use App\Models\Guru;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use stdClass;
 
 class GuruResource extends Resource
 {
@@ -28,26 +35,24 @@ class GuruResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nip')
+                TextInput::make('nip')
                     ->label('NIP')
                     ->unique(ignoreRecord: true)
                     ->required()
                     ->maxLength(25),
-                // Forms\Components\View::make('filament.forms.components.info-nip')
-                // ->columnSpan(1),
 
-                Forms\Components\TextInput::make('nama')
+                TextInput::make('nama')
                     ->label('Nama')
                     ->required()
                     ->maxLength(128),
-                Forms\Components\TextInput::make('tempat_lahir')
+                TextInput::make('tempat_lahir')
                     ->label('Tempat Lahir')
                     ->required()
                     ->maxLength(128),
-                Forms\Components\DatePicker::make('tgl_lahir')
+                DatePicker::make('tgl_lahir')
                     ->label('Tanggal Lahir')
                     ->required(),
-                Forms\Components\Select::make('jenis_kelamin')
+                Select::make('jenis_kelamin')
                     ->label('Jenis Kelamin')
                     ->options([
                         'L' => 'Laki-Laki',
@@ -55,7 +60,7 @@ class GuruResource extends Resource
                     ])
                     ->preload()
                     ->required(),
-                Forms\Components\Textarea::make('alamat')
+                Textarea::make('alamat')
                     ->rows(5)
                     ->columnSpanFull(),
             ]);
@@ -65,28 +70,40 @@ class GuruResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nip')
+                TextColumn::make('index')
+                    ->label('No.')
+                    ->state(static function (HasTable $livewire, stdClass $rowLoop): string {
+                        return (string) (
+                            $rowLoop->iteration +
+                            ($livewire->getTableRecordsPerPage() * ($livewire->getTablePage() - 1))
+                        );
+                    }),
+                TextColumn::make('nip')
+                    ->label('NIP')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('nama')
+                TextColumn::make('nama')
+                    ->label('Nama')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('tempat_lahir')
+                TextColumn::make('tempat_lahir')
+                    ->label('Tempat Lahir')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('tgl_lahir')
+                TextColumn::make('tgl_lahir')
+                    ->label('Tgl. Lahir')
                     ->date()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('jenis_kelamin')
+                TextColumn::make('jenis_kelamin')
                     ->sortable()
                     ->alignCenter(),
-                Tables\Columns\TextColumn::make('alamat')
+                TextColumn::make('alamat')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
