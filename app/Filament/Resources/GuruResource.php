@@ -86,14 +86,21 @@ class GuruResource extends Resource
                     ->label('Nama')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('tempat_lahir')
-                    ->label('Tempat Lahir')
+                TextColumn::make('tempat_tgl_lahir')
+                    ->label('Tempat, Tgl. Lahir')
                     ->searchable()
-                    ->sortable(),
-                TextColumn::make('tgl_lahir')
-                    ->label('Tgl. Lahir')
-                    ->date()
-                    ->sortable(),
+                    ->sortable(
+                        query: fn($query, $direction) =>
+                        $query->orderByRaw("CONCAT(tempat_lahir, ' ', tgl_lahir) {$direction}")
+                    ),
+                // TextColumn::make('tempat_lahir')
+                //     ->label('Tempat Lahir')
+                //     ->searchable()
+                //     ->sortable(),
+                // TextColumn::make('tgl_lahir')
+                //     ->label('Tgl. Lahir')
+                //     ->date()
+                //     ->sortable(),
                 TextColumn::make('jenis_kelamin')
                     ->sortable()
                     ->alignCenter(),

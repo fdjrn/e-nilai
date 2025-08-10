@@ -253,48 +253,51 @@ class SiswaResource extends Resource
                             ($livewire->getTableRecordsPerPage() * ($livewire->getTablePage() - 1))
                         );
                     }),
-                Tables\Columns\TextColumn::make('nis')
+                TextColumn::make('nis')
                     ->label('NIS')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('nisn')
+                TextColumn::make('nisn')
                     ->label('NISN')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('nama')
+                TextColumn::make('nama')
                     ->label('Nama Lengkap')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('tempat_tgl_lahir')
+                TextColumn::make('tempat_tgl_lahir')
                     ->label('Tempat, Tgl. Lahir')
                     ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('jenis_kelamin')
+                    ->sortable(
+                        query: fn($query, $direction) =>
+                        $query->orderByRaw("CONCAT(tempat_lahir, ' ', tgl_lahir) {$direction}")
+                    ),
+                TextColumn::make('jenis_kelamin')
                     ->label('Jenis Kelamin')
                     ->sortable()
                     ->alignCenter(),
-                Tables\Columns\TextColumn::make('alamat')
+                TextColumn::make('alamat')
                     ->label('Alamat')
                     ->wrap(),
-                Tables\Columns\TextColumn::make('tgl_masuk')
+                TextColumn::make('tgl_masuk')
                     ->date(self::DATE_FORMAT)
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('tgl_keluar')
+                TextColumn::make('tgl_keluar')
                     ->date(self::DATE_FORMAT)
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('status')
+                TextColumn::make('status')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         'Active' => 'success',
                         'Inactive' => 'danger',
                     }),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

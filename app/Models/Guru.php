@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -32,6 +33,10 @@ class Guru extends Model
     public function getNamaWaliKelasAttribute(): string
     {
         return "{$this->nama}";
+    }
+
+    public function getTempatTglLahirAttribute(): string {
+            return "{$this->tempat_lahir}, " . Carbon::parse($this->tgl_lahir)->translatedFormat('d M Y');
     }
 
     // 1 Guru bisa mengajar beberapa Mata Pelajaran yang diajarkan
