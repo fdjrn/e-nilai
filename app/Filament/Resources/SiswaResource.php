@@ -53,7 +53,7 @@ class SiswaResource extends Resource
                                     ->required()
                                     ->maxLength(15),
                                 Forms\Components\TextInput::make('nama')
-                                    ->label('Nama Siswa')
+                                    ->label('Nama Lengkap')
                                     ->required()
                                     ->maxLength(128),
 
@@ -255,39 +255,27 @@ class SiswaResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('nis')
                     ->label('NIS')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('nisn')
                     ->label('NISN')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('nik')
-                    ->label('NIK')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('nama')
-                    ->label('Nama')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('tempat_lahir')
-                    ->label('Tempat Lahir')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('tgl_lahir')
-                    ->label('Tanggal Lahir')
-                    ->date(self::DATE_FORMAT)
+                    ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('jenis_kelamin')->alignCenter(),
-                Tables\Columns\TextColumn::make('hobi')
+                Tables\Columns\TextColumn::make('nama')
+                    ->label('Nama Lengkap')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('cita_cita')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('tempat_tgl_lahir')
+                    ->label('Tempat, Tgl. Lahir')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('jumlah_sdr')
-                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('jenis_kelamin')
+                    ->label('Jenis Kelamin')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('anak_ke')
-                    ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
+                    ->alignCenter(),
+                Tables\Columns\TextColumn::make('alamat')
+                    ->label('Alamat')
+                    ->wrap(),
                 Tables\Columns\TextColumn::make('tgl_masuk')
                     ->date(self::DATE_FORMAT)
                     ->sortable()

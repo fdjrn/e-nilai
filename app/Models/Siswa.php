@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Siswa extends Model
@@ -39,5 +40,9 @@ class Siswa extends Model
     public function rombel()
     {
         return $this->hasMany(Rombel::class);
+    }
+
+    public function getTempatTglLahirAttribute(): string {
+            return "{$this->tempat_lahir}, " . Carbon::parse($this->tgl_lahir)->translatedFormat('d M Y');
     }
 }
