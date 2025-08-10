@@ -14,7 +14,12 @@ use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\MengajarResource\Pages;
+use App\Models\Kelas;
+use App\Models\TahunAkademik;
 use Filament\Forms\Components\Hidden;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
+use stdClass;
 
 class MengajarResource extends Resource
 {
@@ -69,7 +74,7 @@ class MengajarResource extends Resource
                     ->reactive()
                     ->rules([
                         function (Get $get) {
-                            return function (string $attribute, $value, \Closure $fail) use ($get) {
+                            return function ($value, \Closure $fail) use ($get) {
                                 $mapel = $value;
                                 $kelas = $get('kelas_id');
                                 $tahun = $get('tahun_akademik_id');
@@ -122,35 +127,44 @@ class MengajarResource extends Resource
         return $table
 
             ->columns([
-                Tables\Columns\TextColumn::make('tahunAkademik.tahun_akademik')
+
+                TextColumn::make('index')
+                    ->label('No.')
+                    ->state(static function (HasTable $livewire, stdClass $rowLoop): string {
+                        return (string) (
+                            $rowLoop->iteration +
+                            ($livewire->getTableRecordsPerPage() * ($livewire->getTablePage() - 1))
+                        );
+                    }),
+
+                TextColumn::make('tahunAkademik.tahun_akademik_semester')
                     ->label('Tahun Akademik')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('semester')
-                    ->label('Semester')
-                    ->sortable()
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: false),
-                Tables\Columns\TextColumn::make('guru.nama')->label('Nama Guru')
-                    ->sortable()
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('mataPelajaran.nama_mapel')->label('Mata Pelajaran')
+                    ->sortable(
+                        query: fn($query, $direction) =>
+                        $query->orderByRaw("CONCAT(tahun_akademik_id, ' ', semester) {$direction}")
+                    ),
+
+                TextColumn::make('guru.nama')->label('Nama Guru')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('kelas.kode_nama_kelas')
+                TextColumn::make('mataPelajaran.nama_mapel')->label('Mata Pelajaran')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('kelas_info')
                     ->label('Kelas')
-                    ->sortable()
+                    ->sortable(query: fn ($query, $direction) => $query->orderByKelasInfo($direction))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false),
 
-                Tables\Columns\TextColumn::make('kkm')
+                TextColumn::make('kkm')
                     ->label('KKM')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -158,13 +172,8 @@ class MengajarResource extends Resource
             ->filters([
                 SelectFilter::make('tahun_akademik')
                     ->label('Tahun Akademik')
-                    ->options(function () {
-                        return \App\Models\TahunAkademik::query()
-                            ->select('tahun_akademik')
-                            ->distinct()
-                            ->orderBy('tahun_akademik', 'asc')
-                            ->pluck('tahun_akademik', 'tahun_akademik'); // key => label
-                    })
+                    ->options(fn() => TahunAkademik::getListTahunAkademik())
+                    ->default(fn() => TahunAkademik::getDefaultTahunAkademik())
                     ->query(function (Builder $query, array $data): Builder {
                         if (! $data['value']) {
                             return $query;
@@ -185,13 +194,7 @@ class MengajarResource extends Resource
 
                 SelectFilter::make('kelas')
                     ->label('Kelas')
-                    ->options(function () {
-                        return \App\Models\Kelas::query()
-                            ->select('kode_kelas')
-                            ->distinct()
-                            ->orderBy('kode_kelas', 'asc')
-                            ->pluck('kode_kelas', 'kode_kelas'); // key => label
-                    })
+                    ->options(fn() => Kelas::getListKelas())
                     ->query(function (Builder $query, array $data): Builder {
                         if (! $data['value']) {
                             return $query;

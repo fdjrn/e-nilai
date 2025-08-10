@@ -66,4 +66,13 @@ class Kelas extends Model
             'tahun_akademik_id'
         );
     }
+
+    // Default daftar nama kelas yang ditampilkan
+    public static function getListKelas()
+    {
+        return self::query()->select('kode_kelas')
+            ->distinct()
+            ->orderBy('kode_kelas', 'asc')
+            ->pluck('kode_kelas', 'kode_kelas');
+    }
 }

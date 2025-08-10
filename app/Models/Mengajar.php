@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Filament\Forms\Components\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Mengajar extends Model
@@ -40,5 +41,32 @@ class Mengajar extends Model
     public function kelas()
     {
         return $this->belongsTo(Kelas::class);
+    }
+
+    public function getKelasInfoAttribute(): string
+    {
+        if (! $this->kelas) {
+            return '-';
+        }
+
+        return "{$this->kelas->kode_kelas} - {$this->kelas->nama_kelas}";
+    }
+
+    public function scopeOrderByKelasInfo($query, $direction = 'asc')
+    {
+        return $query
+            ->join('kelas', 'mengajar.kelas_id', '=', 'kelas.id')
+            ->orderByRaw("CONCAT_WS(' ', kelas.kode_kelas, kelas.nama_kelas) {$direction}")
+            ->select('mengajar.*');
+    }
+
+    /**
+     * Default Sorting by Kelas untuk komponen filament table
+     */
+    public static function getTableQuery(): Builder
+    {
+        return parent::getTableQuery()
+            ->with('kelas')
+            ->orderByKelasInfo();
     }
 }
