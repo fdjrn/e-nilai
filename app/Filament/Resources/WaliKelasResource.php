@@ -14,6 +14,7 @@ use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\WaliKelasResource\Pages;
+use App\Models\Kelas;
 use App\Models\TahunAkademik;
 use Filament\Forms\Get;
 use Filament\Tables\Columns\TextColumn;
@@ -128,17 +129,17 @@ class WaliKelasResource extends Resource
                     )
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                // TextColumn::make('kelas.kode_nama_kelas')
-                //     ->label('Kelas')
-                //     ->searchable()
-                //     ->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('kelas.kode_nama_kelas')
+                    ->label('Kelas')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('guru.nama')
                     ->label('Wali Kelas')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('total_siswa')
-                    ->label('Total Siswa')
-                    ->state(fn($record) => $record->jumlahSiswa()),
+                    ->label('Jumlah Siswa')
+                    ->getStateUsing(fn($record) => ($record->jumlahSiswa() . ' Orang')),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -165,43 +166,27 @@ class WaliKelasResource extends Resource
                     ->searchable()
                     ->preload(),
 
-                SelectFilter::make('wali_kelas.semester')
-                    ->label('Semester')
-                    ->options(fn() => TahunAkademik::getListSemester())
-                    ->default(fn() => TahunAkademik::getDefaultSemester())
-                    ->query(function (Builder $query, array $data): Builder {
-                        if (! $data['value']) {
-                            return $query;
-                        }
+                SelectFilter::make('semester')
+                    ->default('Ganjil')
+                    ->options([
+                        'Ganjil' => 'GANJIL',
+                        'Genap' => 'GENAP'
+                    ]),
 
-                        return $query->whereHas('tahunAkademik', function ($q) use ($data) {
-                            $q->where('semester', $data['value']);
-                        });
-                    })
-                    ->searchable()
-                    ->preload(),
+                // SelectFilter::make('kelas')
+                //     ->label('Kelas')
+                //     ->options(fn() => Kelas::getListKelas())
+                //     ->query(function (Builder $query, array $data): Builder {
+                //         if (! $data['value']) {
+                //             return $query;
+                //         }
 
-                SelectFilter::make('kelas')
-                    ->label('Kelas')
-                    ->options(function () {
-                        return \App\Models\Kelas::query()
-                            ->select('kode_kelas')
-                            ->distinct()
-                            ->orderBy('kode_kelas', 'asc')
-                            ->pluck('kode_kelas', 'kode_kelas'); // key => label
-                    })
-                    ->default('X IPA')
-                    ->query(function (Builder $query, array $data): Builder {
-                        if (! $data['value']) {
-                            return $query;
-                        }
-
-                        return $query->whereHas('kelas', function ($q) use ($data) {
-                            $q->where('kode_kelas', $data['value']);
-                        });
-                    })
-                    ->searchable()
-                    ->preload(),
+                //         return $query->whereHas('kelas', function ($q) use ($data) {
+                //             $q->where('kode_kelas', $data['value']);
+                //         });
+                //     })
+                //     ->searchable()
+                //     ->preload(),
             ], layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\EditAction::make(),

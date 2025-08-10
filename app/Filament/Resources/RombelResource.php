@@ -10,12 +10,15 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Validation\ValidationException;
+use stdClass;
 
 class RombelResource extends Resource
 {
@@ -70,29 +73,40 @@ class RombelResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('tahunAkademik.tahun_akademik_semester')
+                TextColumn::make('index')
+                    ->label('No.')
+                    ->state(static function (HasTable $livewire, stdClass $rowLoop): string {
+                        return (string) (
+                            $rowLoop->iteration +
+                            ($livewire->getTableRecordsPerPage() * ($livewire->getTablePage() - 1))
+                        );
+                    }),
+
+                TextColumn::make('tahunAkademik.tahun_akademik_semester')
                     ->label('Tahun Akademik')
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
-                Tables\Columns\TextColumn::make('waliKelas.guru.nama')
+                TextColumn::make('waliKelas.guru.nama')
                     ->label('Wali Kelas')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('kelas.kode_nama_kelas')
+                TextColumn::make('kelas.kode_nama_kelas')
                     ->label('Kelas')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('siswa.nis')
+                TextColumn::make('siswa.nis')
                     ->label('NIS')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('siswa.nama')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('siswa.nama')
                     ->label('Nama Lengkap Siswa')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -114,10 +128,12 @@ class RombelResource extends Resource
                     ->searchable()
                     ->preload(),
 
-                SelectFilter::make('wali_kelas.semester')
-                    ->label('Semester')
-                    ->options(fn() => TahunAkademik::getListSemester())
-                    ->default(fn() => TahunAkademik::getDefaultSemester())
+                SelectFilter::make('semester')
+                    ->options([
+                        'Ganjil' => 'GANJIL',
+                        'Genap' => 'GENAP'
+                    ])
+                    ->default('Ganjil')
                     ->query(function (Builder $query, array $data): Builder {
                         if (! $data['value']) {
                             return $query;
@@ -129,6 +145,25 @@ class RombelResource extends Resource
                     })
                     ->searchable()
                     ->preload(),
+
+                // SelectFilter::make('tahunAkademik.semester')
+                //     ->label('Semester')
+                //     ->options([
+                //         'Ganjil' => 'GANJIL',
+                //         'Genap' => 'GENAP'
+                //     ])
+                //     ->default(fn() => TahunAkademik::getDefaultSemester())
+                //     ->query(function (Builder $query, array $data): Builder {
+                //         if (! $data['value']) {
+                //             return $query;
+                //         }
+
+                //         return $query->whereHas('tahunAkademik', function ($q) use ($data) {
+                //             $q->where('semester', $data['value']);
+                //         });
+                //     })
+                //     ->searchable()
+                //     ->preload(),
 
                 SelectFilter::make('kelas')
                     ->label('Kelas')
