@@ -228,7 +228,7 @@ class MengajarResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListMengajars::route('/'),
+            'index' => Pages\ListMengajar::route('/'),
             'create' => Pages\CreateMengajar::route('/create'),
             'edit' => Pages\EditMengajar::route('/{record}/edit'),
         ];

@@ -6,7 +6,7 @@ use App\Filament\Resources\MengajarResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
-class ListMengajars extends ListRecords
+class ListMengajar extends ListRecords
 {
     protected static string $resource = MengajarResource::class;
     protected ?string $heading = 'List of Mengajar';

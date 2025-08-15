@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\CustomLogin;
 use App\Filament\Resources\GuruResource\Widgets\JumlahGuru;
 use App\Filament\Resources\KelasResource\Widgets\JumlahKelas;
 use App\Filament\Resources\SiswaResource\Widgets\JumlahSiswa;
@@ -32,6 +33,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandLogo(asset('images/logo-400x400.png'))
+            ->brandLogoHeight('50px')
             ->colors([
                 'primary' => Color::Indigo,
             ])
@@ -43,12 +46,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 AccountWidget::class,
-                // Widgets\AccountWidget::class,
                 AdminWidget::class,
-                // JumlahGuru::class,
-                // JumlahSiswa::class,
-                // JumlahKelas::class
-                // Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

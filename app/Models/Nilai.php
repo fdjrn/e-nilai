@@ -36,4 +36,24 @@ class Nilai extends Model
             'nilai_huruf',
             'deskripsi',
     ];
+
+    public function tahunAkademik()
+    {
+        return $this->belongsTo(TahunAkademik::class);
+    }
+
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class);
+    }
+
+    public function mataPelajaran()
+    {
+        return $this->belongsTo(MataPelajaran::class, 'mapel_id');
+    }
+
+    public function siswa()
+    {
+        return $this->belongsTo(Siswa::class);
+    }
 }

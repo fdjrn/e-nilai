@@ -18,6 +18,11 @@ class Kelas extends Model
         return "{$this->kode_kelas} - {$this->nama_kelas}";
     }
 
+    public function getFullKelasNameAttribute()
+    {
+        return "{$this->kode_kelas} - {$this->nama_kelas}";
+    }
+
     public function mengajar()
     {
         return $this->hasMany(Mengajar::class);
