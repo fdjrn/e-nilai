@@ -35,6 +35,11 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->brandLogo(asset('images/logo-400x400.png'))
             ->brandLogoHeight('50px')
+            ->sidebarFullyCollapsibleOnDesktop()
+            ->renderHook(
+                'panels::topbar.start',
+                fn() => view('filament.components.topbar.app-name')
+            )
             ->colors([
                 'primary' => Color::Indigo,
             ])

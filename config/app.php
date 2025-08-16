@@ -123,4 +123,8 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'filament' => [
+        'app_name' => env('FILAMENT_APP_NAME', 'eNilai'),
+    ]
+
 ];
