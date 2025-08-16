@@ -10,19 +10,18 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use stdClass;
 
 class NilaiResource extends Resource
 {
     protected static ?string $model = Nilai::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationLabel = "Input Nilai Siswa";
-
-    protected static ?int $navigationSort = 999;
-    protected static ?string $breadcrumb = "Nilai Siswa";
-    protected static ?string $slug = 'nilai';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationLabel = "Nilai Akademik";
+    protected static ?string $navigationGroup = 'Akademik';
+    protected static ?int $navigationSort = 1;
+    protected static ?string $breadcrumb = "Nilai Akademik";
+    protected static ?string $slug = 'nilai-akademik';
 
     public static function form(Form $form): Form
     {
@@ -112,80 +111,80 @@ class NilaiResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('tahun_akademik_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('index')
+                    ->label('NO.')
+                    ->state(static function (Tables\Contracts\HasTable $livewire, stdClass $rowLoop): string {
+                        return (string) (
+                            $rowLoop->iteration +
+                            ($livewire->getTableRecordsPerPage() * ($livewire->getTablePage() - 1))
+                        );
+                    }),
+
+                Tables\Columns\TextColumn::make('siswa.nis')
+                    ->label('NIS')
+                    ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('semester'),
-                Tables\Columns\TextColumn::make('kelas_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('siswa.nama')
+                    ->label('NAMA SISWA')
+                    ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('mapel_id')
-                    ->numeric()
+                Tables\Columns\TextInputColumn::make('nslm_1')
+                    ->type('number')
+                    ->label('NSLM 1')
+                    ->rules(['numeric','min:0','max:100'])
+                    ->alignEnd()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('siswa_id')
-                    ->numeric()
+                Tables\Columns\TextInputColumn::make('nslm_2')
+                    ->type('number')
+                    ->label('NSLM 2')
+                    ->rules(['numeric','min:0'])
+                    ->alignEnd()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('nilai_tp1')
-                    ->numeric()
+                Tables\Columns\TextInputColumn::make('nslm_3')
+                    ->type('number')
+                    ->label('NSLM 3')
+                    ->rules(['numeric','min:0'])
+                    ->alignEnd()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('nilai_tp2')
-                    ->numeric()
+                Tables\Columns\TextInputColumn::make('nslm_4')
+                    ->type('number')
+                    ->label('NSLM 4')
+                    ->rules(['numeric','min:0'])
+                    ->alignEnd()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('nilai_tp3')
-                    ->numeric()
+                Tables\Columns\TextInputColumn::make('nslm_5')
+                    ->type('number')
+                    ->label('NSLM 5')
+                    ->rules(['numeric','min:0'])
+                    ->alignEnd()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('nilai_tp4')
-                    ->numeric()
+                Tables\Columns\TextInputColumn::make('nslm_6')
+                    ->type('number')
+                    ->label('NSLM 6')
+                    ->rules(['numeric','min:0'])
+                    ->alignEnd()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('nilai_tp5')
-                    ->numeric()
+                Tables\Columns\TextInputColumn::make('nslm_7')
+                    ->type('number')
+                    ->label('NSLM 7')
+                    ->rules(['numeric','min:0'])
+                    ->alignEnd()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('nilai_tp6')
+                Tables\Columns\TextColumn::make('rata_nslm')
                     ->numeric()
+                    ->label('RATA-RATA NSLM')
+                    ->alignEnd()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('nilai_tp7')
+                Tables\Columns\TextInputColumn::make('nsas')
+                    ->type('number')
+                    ->label('NSAS')
+                    ->alignEnd()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('nr')
                     ->numeric()
+                    ->label('NR')
+                    ->alignEnd()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('rata_tp')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('nilai_uh1')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('nilai_uh2')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('nilai_uh3')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('nilai_uh4')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('nilai_uh5')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('nilai_uh6')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('nilai_uh7')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('rata_uh')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('nilai_pts')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('nilai_uas')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('nilai_akhir')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('nilai_huruf')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('deskripsi')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -199,7 +198,6 @@ class NilaiResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -218,9 +216,9 @@ class NilaiResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListNilais::route('/'),
-            'create' => Pages\CreateNilai::route('/create'),
-            'edit' => Pages\EditNilai::route('/{record}/edit'),
+            'index' => Pages\ListNilai::route('/'),
+            // 'create' => Pages\CreateNilai::route('/create'),
+            // 'edit' => Pages\EditNilai::route('/{record}/edit'),
         ];
     }
 }

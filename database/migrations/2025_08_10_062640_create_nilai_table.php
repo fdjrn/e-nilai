@@ -18,27 +18,16 @@ return new class extends Migration
             $table->foreignId('kelas_id')->constrained('kelas')->onDelete('restrict');
             $table->foreignId('mapel_id')->nullable()->constrained('mapel')->onDelete('restrict');
             $table->foreignId('siswa_id')->constrained('siswa')->onDelete('restrict');
-            $table->integer('nilai_tp1');
-            $table->integer('nilai_tp2');
-            $table->integer('nilai_tp3');
-            $table->integer('nilai_tp4');
-            $table->integer('nilai_tp5');
-            $table->integer('nilai_tp6');
-            $table->integer('nilai_tp7');
-            $table->integer('rata_tp');
-            $table->integer('nilai_uh1');
-            $table->integer('nilai_uh2');
-            $table->integer('nilai_uh3');
-            $table->integer('nilai_uh4');
-            $table->integer('nilai_uh5');
-            $table->integer('nilai_uh6');
-            $table->integer('nilai_uh7');
-            $table->integer('rata_uh');
-            $table->integer('nilai_pts');
-            $table->integer('nilai_uas');
-            $table->integer('nilai_akhir');
-            $table->string('nilai_huruf');
-            $table->string('deskripsi');
+            $table->integer('nslm_1')->default(0);
+            $table->integer('nslm_2')->default(0);
+            $table->integer('nslm_3')->default(0);
+            $table->integer('nslm_4')->default(0);
+            $table->integer('nslm_5')->default(0);
+            $table->integer('nslm_6')->default(0);
+            $table->integer('nslm_7')->default(0);
+            $table->decimal('rata_nslm',5,2)->default(0);
+            $table->integer('nsas')->default(0);
+            $table->decimal('nr',5,2)->default(0);
             $table->timestamps();
 
             $table->unique([
@@ -47,7 +36,7 @@ return new class extends Migration
                 'kelas_id',
                 'mapel_id',
                 'siswa_id'
-            ], 'rombel_unique');
+            ], 'nilai_unique');
         });
     }
 

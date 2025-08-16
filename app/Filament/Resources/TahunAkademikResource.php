@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Konstanta;
 use App\Filament\Resources\TahunAkademikResource\Pages;
 use App\Filament\Resources\TahunAkademikResource\RelationManagers;
 use App\Models\TahunAkademik;
@@ -29,18 +30,18 @@ class TahunAkademikResource extends Resource
     protected static ?string $model = TahunAkademik::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationLabel = self::RESOURCE_LABEL;
+    protected static ?string $navigationLabel = Konstanta::TAHUN_AKADEMIK;
     protected static ?string $navigationGroup = 'Master Data';
     protected static ?int $navigationSort = 1;
-    protected static ?string $breadcrumb = self::RESOURCE_LABEL;
-    protected static ?string $slug = 'tahun-akademik';
+    protected static ?string $breadcrumb = Konstanta::TAHUN_AKADEMIK;
+    protected static ?string $slug = Konstanta::TAHUN_AKADEMIK_SLUG;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 TextInput::make('tahun_akademik')
-                    ->label(self::RESOURCE_LABEL)
+                    ->label(Konstanta::TAHUN_AKADEMIK)
                     ->required()
                     ->maxLength(10),
                 Select::make('semester')
@@ -64,13 +65,13 @@ class TahunAkademikResource extends Resource
                 TextColumn::make('index')
                     ->label('No.')
                     ->state(static function (HasTable $livewire, stdClass $rowLoop): string {
-                        return (string) (
+                        return (string)(
                             $rowLoop->iteration +
                             ($livewire->getTableRecordsPerPage() * ($livewire->getTablePage() - 1))
                         );
                     }),
                 TextColumn::make('tahun_akademik')
-                    ->label('Tahun Akademik')
+                    ->label(Konstanta::TAHUN_AKADEMIK)
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('semester')
@@ -96,15 +97,15 @@ class TahunAkademikResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('tahun_akademik')
-                ->label('Tahun Akdemik')
-                ->options(function(){
-                    return TahunAkademik::query()
-                    ->select('tahun_akademik')
-                    ->orderBy('tahun_akademik', 'asc')
-                    ->distinct()
-                    ->pluck('tahun_akademik', 'tahun_akademik')
-                    ->toArray();
-                }),
+                    ->label(Konstanta::TAHUN_AKADEMIK)
+                    ->options(function () {
+                        return TahunAkademik::query()
+                            ->select('tahun_akademik')
+                            ->orderBy('tahun_akademik', 'asc')
+                            ->distinct()
+                            ->pluck('tahun_akademik', 'tahun_akademik')
+                            ->toArray();
+                    }),
 
                 SelectFilter::make('semester')
                     ->options([
