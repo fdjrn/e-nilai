@@ -13,7 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         if (($_ENV['APP_ENV'] ?? 'local') === 'production') {
-            $middleware->append(TrustProxies::class);
+            $middleware->trustProxies(TrustProxies::class);
         }
     })
     ->withExceptions(function (Exceptions $exceptions): void {

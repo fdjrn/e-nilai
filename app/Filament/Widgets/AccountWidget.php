@@ -40,17 +40,17 @@ class AccountWidget extends Widget
                 'url' => route('profile'),
                 'icon' => 'heroicon-o-user',
             ],
-            'logout' => static::getLogoutItem(),
+//            'logout' => static::getLogoutItem(),
         ];
     }
 
-    public static function getLogoutItem(): Action
-    {
-        return Action::make('logout')
-            ->label(__('filament::widgets/account-widget.logout.label'))
-            ->icon('heroicon-o-logout')
-            ->requiresConfirmation(false)
-            ->url(Filament::getLogoutUrl(), shouldOpenInNewTab: false)
-            ->extraAttributes(['onclick' => "event.preventDefault(); document.getElementById('logout-form').submit();"]);
-    }
+//    public static function getLogoutItem(): Action
+//    {
+//        return Action::make('logout')
+//            ->label(__('filament::widgets/account-widget.logout.label'))
+//            ->icon('heroicon-o-logout')
+//            ->requiresConfirmation(false)
+//            ->url(Filament::getLogoutUrl(), shouldOpenInNewTab: false)
+//            ->extraAttributes(['onclick' => "event.preventDefault(); document.getElementById('logout-form').submit();"]);
+//    }
 }
