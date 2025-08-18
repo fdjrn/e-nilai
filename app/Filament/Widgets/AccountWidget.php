@@ -2,15 +2,17 @@
 
 namespace App\Filament\Widgets;
 
+use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Widgets\Widget;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class AccountWidget extends Widget
 {
     protected static string $view = 'filament.widgets.account-widget';
     protected int|string|array $columnSpan = 'full';
 
-    public function getUser(): ?\Illuminate\Contracts\Auth\Authenticatable
+    public function getUser(): ?Authenticatable
     {
         return Filament::auth()->user();
     }
@@ -27,7 +29,7 @@ class AccountWidget extends Widget
 
     public function getUserAvatarUrl(): ?string
     {
-        return null; // Bisa diganti ke URL avatar user, misalnya pakai Gravatar atau field di DB
+        return null;
     }
 
     public function getAccountMenuItems(): array
@@ -35,21 +37,20 @@ class AccountWidget extends Widget
         return [
             'profile' => [
                 'label' => 'Profile',
-                'url' => route('profile'), // Pastikan route ini ada
+                'url' => route('profile'),
                 'icon' => 'heroicon-o-user',
             ],
             'logout' => static::getLogoutItem(),
         ];
     }
 
-    public static function getLogoutItem(): array
+    public static function getLogoutItem(): Action
     {
-        return [
-            'label' => __('filament::widgets/account-widget.logout.label'),
-//            'url' => Filament::getLogoutUrl(),
-            'action' => Filament::getLogoutUrl(),
-            'icon' => 'heroicon-o-logout',
-            'shouldOpenInNewTab' => false,
-        ];
+        return Action::make('logout')
+            ->label(__('filament::widgets/account-widget.logout.label'))
+            ->icon('heroicon-o-logout')
+            ->requiresConfirmation(false)
+            ->url(Filament::getLogoutUrl(), shouldOpenInNewTab: false)
+            ->extraAttributes(['onclick' => "event.preventDefault(); document.getElementById('logout-form').submit();"]);
     }
 }

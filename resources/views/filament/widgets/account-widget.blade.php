@@ -25,6 +25,7 @@
                 class="my-auto"
             >
                 @csrf
+                @method('POST')
 
                 <x-filament::button
                     color="gray"
