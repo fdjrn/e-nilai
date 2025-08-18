@@ -21,3 +21,80 @@
 - **[Filament v3.3.34](https://filamentphp.com/)**
 - **[MariaDB](https://mariadb.org/)**
 - **[Laravel Permission](https://spatie.be/docs/laravel-permission/v6/introduction)**
+
+## Instalasi Dependency (Linux Debian/Ubuntu)
+### 1. Apache ###
+- Install Apache weh server
+```
+sudo apt install apache2
+```
+
+- Cek instalasi:
+```
+sudo systemctl status apache2
+```
+
+### 2. Php 8.3 ###
+
+- Install php
+```
+sudo apt install software-properties-common ca-certificates lsb-release apt-transport-https
+
+sudo add-apt-repository ppa:ondrej/php
+
+sudo apt install php8.3 libapache2-mod-php8.3 php8.3-intl php8.3-mysql php8.3-zip php8.3-xml php8.3-mbstring
+
+```
+
+- Cek instalasi:
+```
+php -v
+```
+
+### 3. Composer ###
+
+
+### 4. NVM ###
+- Install NVM
+```
+sudo apt install curl
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+
+source ~/.bashrc
+
+```
+
+- Cek nvm version:
+```
+nvm --version
+```
+
+- Cek nvm remote repository:
+```
+nvm ls-remote
+```
+
+- Install NodeJs
+```
+nvm install 20.18.2  
+```
+- Cek Instalasi
+```
+node -v  
+```
+
+
+## Running Apps
+- Copy file konfigurasi
+```
+cp .env.example .env
+```
+- update koneksi database
+```
+
+```
+- Install Dependency laravel dan yang lainnya
+```
+composer install
+```
