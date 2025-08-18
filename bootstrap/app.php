@@ -13,7 +13,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         //
-        // TrustProxies::class;
+        if (config('app.env') === 'production') {
+             TrustProxies::class;
+        }
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
