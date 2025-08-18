@@ -12,7 +12,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        if (config('app.env') === 'production') {
+        if (($_ENV['APP_ENV'] ?? 'local') === 'production') {
             $middleware->append(TrustProxies::class);
         }
     })
