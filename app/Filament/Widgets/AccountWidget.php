@@ -46,7 +46,8 @@ class AccountWidget extends Widget
     {
         return [
             'label' => __('filament::widgets/account-widget.logout.label'),
-            'url' => Filament::getLogoutUrl(),
+//            'url' => Filament::getLogoutUrl(),
+            'action' => Filament::getLogoutUrl(),
             'icon' => 'heroicon-o-logout',
             'shouldOpenInNewTab' => false,
         ];
