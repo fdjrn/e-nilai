@@ -5,9 +5,12 @@
     <div class="fi-simple-header flex flex-col items-center space-y-2 ">
         {{-- Logo --}}
         <img class="fi-logo flex dark:flex h-32" src="{{ asset('images/logo-400x400.png') }}" alt="Logo">
-        {{-- School Name --}}
-        <p class="fi-simple-header-heading text-center text-sm font-bold tracking-tight text-gray-950 dark:text-white mb-5">
-            SMAN 2 CIKARANG UTARA
+        {{-- App Name --}}
+        <p class="fi-simple-header-heading text-center text-sm font-semibold tracking-tight text-gray-950 dark:text-white mb-5">
+            {{ config('app.filament.app_name') }}
+            <span>
+                <br>SMAN 2 CIKARANG UTARA
+            </span>
         </p>
     </div>
 
@@ -15,7 +18,7 @@
     <div class="mt-4 mb-12">
         {{-- Login Caption --}}
         <h1
-            class="fi-simple-header-heading text-center text-2xl font-bold tracking-tight text-gray-950 dark:text-white"
+            class="fi-simple-header-heading text-center font-bold tracking-tight text-gray-950 dark:text-white"
         >
             {{ $this->getLoginCaption() }}
         </h1>
