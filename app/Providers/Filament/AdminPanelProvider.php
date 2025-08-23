@@ -33,10 +33,10 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('50px')
             ->sidebarCollapsibleOnDesktop()
             ->sidebarWidth("400px")
-            ->renderHook(
+            /*->renderHook(
                 'panels::topbar.start',
                 fn() => view('filament.components.topbar.app-name')
-            )
+            )*/
             ->colors([
                 'primary' => Color::Indigo,
             ])
