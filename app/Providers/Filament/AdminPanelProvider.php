@@ -2,10 +2,7 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Pages\CustomLogin;
-use App\Filament\Resources\GuruResource\Widgets\JumlahGuru;
-use App\Filament\Resources\KelasResource\Widgets\JumlahKelas;
-use App\Filament\Resources\SiswaResource\Widgets\JumlahSiswa;
+use App\Filament\Auth\LoginV2;
 use App\Filament\Widgets\AccountWidget;
 use App\Filament\Widgets\AdminWidget;
 use Filament\Http\Middleware\Authenticate;
@@ -16,7 +13,6 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -32,10 +28,11 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
-            ->brandLogo(asset('images/logo-400x400.png'))
+            ->login(LoginV2::class)
+            ->brandLogo(fn() => view('filament.components.brand'))
             ->brandLogoHeight('50px')
-            ->sidebarFullyCollapsibleOnDesktop()
+            ->sidebarCollapsibleOnDesktop()
+            ->sidebarWidth("400px")
             ->renderHook(
                 'panels::topbar.start',
                 fn() => view('filament.components.topbar.app-name')
