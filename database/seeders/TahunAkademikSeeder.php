@@ -28,7 +28,7 @@ class TahunAkademikSeeder extends Seeder
         ];
 
         foreach ($ta as $t) {
-            TahunAkademik::created($t);
+            TahunAkademik::create($t);
 
         }
     }
