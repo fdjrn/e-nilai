@@ -14,9 +14,10 @@ class MataPelajaranSeeder extends Seeder
     public function run(): void
     {
         $mapel = [
-            ['kode_mapel'=> 'MP001', 'nama_mapel' => 'BAHASA INDONESIA'],
-            ['kode_mapel'=> 'MP002', 'nama_mapel' => 'BAHASA INGGRIS'],
-            ['kode_mapel'=> 'MP003', 'nama_mapel' => 'MATEMATIKA'],
+            ['kode_mapel'=> 'BND', 'nama_mapel' => 'Bahasa Indonesia'],
+            ['kode_mapel'=> 'BNG', 'nama_mapel' => 'Bahasa Inggris'],
+            ['kode_mapel'=> 'MTK', 'nama_mapel' => 'Matematika'],
+            ['kode_mapel'=> 'BIO', 'nama_mapel' => 'Biologi'],
 
         ];
 
