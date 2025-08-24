@@ -193,16 +193,7 @@ class MengajarResource extends Resource
 
                 SelectFilter::make('kelas')
                     ->label('Kelas')
-                    ->options(fn() => Kelas::getListKelas())
-                    ->query(function (Builder $query, array $data): Builder {
-                        if (! $data['value']) {
-                            return $query;
-                        }
-
-                        return $query->whereHas('kelas', function ($q) use ($data) {
-                            $q->where('kode_kelas', $data['value']);
-                        });
-                    })
+                    ->relationship('kelas', 'nama_kelas')
                     ->searchable()
                     ->preload(),
             ], layout: FiltersLayout::AboveContent)
