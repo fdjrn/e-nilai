@@ -18,6 +18,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Validation\Rules\Unique;
 use stdClass;
 
 class GuruResource extends Resource
@@ -36,6 +37,7 @@ class GuruResource extends Resource
         return $form
             ->columns(3)
             ->schema([
+
                 TextInput::make('nip')
                     ->label('NIP')
                     ->unique(ignoreRecord: true)
@@ -47,6 +49,7 @@ class GuruResource extends Resource
                     ->required()
                     ->maxLength(128)
                     ->columnSpan(2),
+
                 TextInput::make('tempat_lahir')
                     ->label('Tempat Lahir')
                     ->required()
@@ -65,6 +68,14 @@ class GuruResource extends Resource
                 Textarea::make('alamat')
                     ->rows(5)
                     ->columnSpanFull(),
+
+                Select::make('user_id')
+                    ->label('Akun User')
+                    ->unique(ignoreRecord: true)
+                    ->validationMessages(['unique' => 'User ini sudah terhubung dengan Guru lain.'])
+                    ->relationship('user', 'email') // tampilkan email user
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 
@@ -75,7 +86,7 @@ class GuruResource extends Resource
                 TextColumn::make('index')
                     ->label('No.')
                     ->state(static function (HasTable $livewire, stdClass $rowLoop): string {
-                        return (string) (
+                        return (string)(
                             $rowLoop->iteration +
                             ($livewire->getTableRecordsPerPage() * ($livewire->getTablePage() - 1))
                         );
@@ -92,14 +103,21 @@ class GuruResource extends Resource
                     ->label('Tempat, Tgl. Lahir')
                     ->searchable()
                     ->sortable(
-                        query: fn($query, $direction) =>
-                        $query->orderByRaw("CONCAT(tempat_lahir, ' ', tgl_lahir) {$direction}")
+                        query: fn($query, $direction) => $query->orderByRaw("CONCAT(tempat_lahir, ' ', tgl_lahir) {$direction}")
                     ),
                 TextColumn::make('jenis_kelamin')
                     ->sortable()
                     ->alignCenter(),
                 TextColumn::make('alamat')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
+
+                TextColumn::make('user.email')
+                    ->label('Akun User')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

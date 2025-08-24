@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Guru extends Model
 {
@@ -19,7 +20,8 @@ class Guru extends Model
         'tempat_lahir',
         'tgl_lahir',
         'jenis_kelamin',
-        'alamat'
+        'alamat',
+        'user_id'
     ];
 
     public function searchScopes(Builder $query, string $term): Builder
@@ -29,6 +31,10 @@ class Guru extends Model
             ->orWhere('alamat', 'like', "%{$term}%");
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function getNamaWaliKelasAttribute(): string
     {
@@ -36,7 +42,20 @@ class Guru extends Model
     }
 
     public function getTempatTglLahirAttribute(): string {
+
+        if ($this->tempat_lahir && $this->tgl_lahir) {
             return "{$this->tempat_lahir}, " . Carbon::parse($this->tgl_lahir)->translatedFormat('d M Y');
+        }
+
+        if ($this->tempat_lahir && !$this->tgl_lahir) {
+            return "{$this->tempat_lahir}, - ";
+        }
+
+        if (!$this->tempat_lahir && $this->tgl_lahir) {
+            return " - , " . Carbon::parse($this->tgl_lahir)->translatedFormat('d M Y');
+        }
+
+        return '-';
     }
 
     // 1 Guru bisa mengajar beberapa Mata Pelajaran yang diajarkan
