@@ -10,6 +10,8 @@ class NilaiInfo extends Widget
 
     protected int|string|array $columnSpan = 'full';
 
+    protected static bool $isDiscovered = false;
+
     public $info = [
         'nslm' => 'Nilai Satuan Lingkup Materi (contoh: 1–100)',
         'nsas' => 'Nilai Sumatif Akhr Semester (contoh: 1–100)',

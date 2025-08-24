@@ -19,6 +19,8 @@ class FilterData extends Widget implements HasForms
 
     protected static string $view = 'filament.resources.nilai-resource.widgets.filter-data';
 
+    protected static bool $isDiscovered = false;
+
     protected int|string|array $columnSpan = 'full';
     public ?array $filterData = [];
 
