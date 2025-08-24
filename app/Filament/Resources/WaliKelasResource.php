@@ -62,7 +62,6 @@ class WaliKelasResource extends Resource
                 Forms\Components\Select::make('kelas_id')
                     ->label('Kelas')
                     ->relationship('kelas', 'nama_kelas')
-                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->kode_kelas} - {$record->nama_kelas}")
                     ->required()
                     ->preload()
                     ->reactive()
@@ -129,7 +128,7 @@ class WaliKelasResource extends Resource
                     )
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('kelas.kode_nama_kelas')
+                TextColumn::make('kelas.nama_kelas')
                     ->label('Kelas')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false),
