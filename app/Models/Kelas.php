@@ -80,4 +80,11 @@ class Kelas extends Model
             ->orderBy('kode_kelas', 'asc')
             ->pluck('kode_kelas', 'kode_kelas');
     }
+
+    public static function getDefaultKelas()
+    {
+        return static::select('id','nama_kelas')
+            ->orderBy('nama_kelas', 'asc')
+            ->pluck('id','nama_kelas');
+    }
 }

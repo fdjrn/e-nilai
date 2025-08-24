@@ -143,45 +143,10 @@ class RombelResource extends Resource
                     ->searchable()
                     ->preload(),
 
-                // SelectFilter::make('tahunAkademik.semester')
-                //     ->label('Semester')
-                //     ->options([
-                //         'Ganjil' => 'GANJIL',
-                //         'Genap' => 'GENAP'
-                //     ])
-                //     ->default(fn() => TahunAkademik::getDefaultSemester())
-                //     ->query(function (Builder $query, array $data): Builder {
-                //         if (! $data['value']) {
-                //             return $query;
-                //         }
-
-                //         return $query->whereHas('tahunAkademik', function ($q) use ($data) {
-                //             $q->where('semester', $data['value']);
-                //         });
-                //     })
-                //     ->searchable()
-                //     ->preload(),
-
                 SelectFilter::make('kelas')
                     ->label('Kelas')
                     ->relationship('kelas', 'nama_kelas')
-//                    ->options(function () {
-//                        return \App\Models\Kelas::query()
-//                            ->select('kode_kelas')
-//                            ->distinct()
-//                            ->orderBy('kode_kelas', 'asc')
-//                            ->pluck('kode_kelas', 'kode_kelas'); // key => label
-//                    })
-////                    ->default('X IPA')
-//                    ->query(function (Builder $query, array $data): Builder {
-//                        if (!$data['value']) {
-//                            return $query;
-//                        }
-//
-//                        return $query->whereHas('kelas', function ($q) use ($data) {
-//                            $q->where('kode_kelas', $data['value']);
-//                        });
-//                    })
+                    ->default(fn() => Kelas::getDefaultKelas())
                     ->searchable()
                     ->preload(),
             ], layout: FiltersLayout::AboveContent)
