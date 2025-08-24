@@ -104,7 +104,6 @@ class MengajarResource extends Resource
                 Forms\Components\Select::make('kelas_id')
                     ->label('Kelas')
                     ->relationship('kelas', 'nama_kelas')
-                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->kode_kelas} - {$record->nama_kelas}")
                     ->required()
                     ->preload()
                     ->reactive(),
@@ -150,7 +149,7 @@ class MengajarResource extends Resource
                 TextColumn::make('mataPelajaran.nama_mapel')->label('Mata Pelajaran')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('kelas_info')
+                TextColumn::make('kelas.nama_kelas')
                     ->label('Kelas')
                     ->sortable(query: fn ($query, $direction) => $query->orderByKelasInfo($direction))
                     ->searchable()
