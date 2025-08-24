@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\NilaiResource\Widgets;
+namespace App\Filament\Widgets;
 
 use Filament\Widgets\Widget;
 
