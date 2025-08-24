@@ -74,13 +74,13 @@ class MengajarResource extends Resource
                     ->reactive()
                     ->rules([
                         function (Get $get) {
-                            return function ($value, \Closure $fail) use ($get) {
+                            return function (string $attribute, $value, \Closure $fail) use ($get) {
                                 $mapel = $value;
                                 $kelas = $get('kelas_id');
                                 $tahun = $get('tahun_akademik_id');
                                 $semester = $get('semester');
 
-                                if ($mapel || ! $kelas || ! $semester || !$tahun) {
+                                if (! $mapel || ! $kelas || ! $semester || ! $tahun) {
                                     return;
                                 }
 
@@ -95,7 +95,7 @@ class MengajarResource extends Resource
                                 }
 
                                 if ($query->exists()) {
-                                    $fail('duplicate entry');
+                                    $fail('Duplicate entry: Mata Pelajaran sudah ada untuk kelas & semester ini.');
                                 }
                             };
                         },

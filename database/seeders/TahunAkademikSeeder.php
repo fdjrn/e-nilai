@@ -15,12 +15,12 @@ class TahunAkademikSeeder extends Seeder
     {
         $ta = [
             [
-                'tahun_akademik'=> '2024/2025',
+                'tahun_akademik'=> '2024-2025',
                 'semester' => 'Ganjil',
                 'is_active' => true,
             ],
             [
-                'tahun_akademik'=> '2024/2025',
+                'tahun_akademik'=> '2024-2025',
                 'semester' => 'Genap',
                 'is_active' => true,
             ],

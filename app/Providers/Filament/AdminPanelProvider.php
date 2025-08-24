@@ -29,6 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login(LoginV2::class)
+            ->profile(isSimple: false)
             ->brandLogo(fn() => view('filament.components.brand'))
             ->brandLogoHeight('50px')
             ->sidebarCollapsibleOnDesktop()
