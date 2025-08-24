@@ -87,10 +87,6 @@ class RombelResource extends Resource
                     ->label('Wali Kelas')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('kelas.kode_nama_kelas')
-                    ->label('Kelas')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('siswa.nis')
                     ->label('NIS')
                     ->sortable()
@@ -99,6 +95,10 @@ class RombelResource extends Resource
                     ->label('Nama Lengkap Siswa')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('kelas.nama_kelas')
+                    ->label('Kelas')
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -146,7 +146,6 @@ class RombelResource extends Resource
                 SelectFilter::make('kelas')
                     ->label('Kelas')
                     ->relationship('kelas', 'nama_kelas')
-                    ->default(fn() => Kelas::getDefaultKelas())
                     ->searchable()
                     ->preload(),
             ], layout: FiltersLayout::AboveContent)
