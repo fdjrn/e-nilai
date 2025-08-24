@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('rombel', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tahun_akademik_id')->constrained('tahun_akademik')->onDelete('restrict');
-            $table->foreignId('wali_kelas_id')->constrained('guru')->onDelete('restrict');
+            $table->foreignId('wali_kelas_id')->constrained('wali_kelas')->onDelete('restrict');
             $table->foreignId('kelas_id')->constrained('kelas')->onDelete('restrict');
             $table->foreignId('siswa_id')->constrained('siswa')->onDelete('restrict');
             $table->timestamps();

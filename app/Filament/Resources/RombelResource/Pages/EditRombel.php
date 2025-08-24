@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\RombelResource\Pages;
 
 use App\Filament\Resources\RombelResource;
+use App\Models\WaliKelas;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
@@ -30,6 +31,15 @@ class EditRombel extends EditRecord
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
         try {
+            $wk = Walikelas::where('tahun_akademik_id', $data['tahun_akademik_id'])
+                ->where('kelas_id', $data['kelas_id'])
+                ->first();
+
+            if (!$wk) {
+                throw ValidationException::withMessages(['err' => 'Wali Kelas belum ditentukan']);
+            }
+
+            $data['wali_kelas_id'] = $wk->id;
             return parent::handleRecordUpdate($record, $data);
         } catch (QueryException $e) {
             if (isset($e->errorInfo[1]) && $e->errorInfo[1] === 1062) {
@@ -44,6 +54,13 @@ class EditRombel extends EditRecord
                 ]);
             }
 
+            throw $e;
+        } catch (ValidationException $e) {
+            Notification::make()
+                ->title('Gagal menyimpan data')
+                ->body($e->getMessage())
+                ->danger()
+                ->send();
             throw $e;
         }
     }

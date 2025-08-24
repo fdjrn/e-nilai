@@ -3,8 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\RombelResource\Pages;
+use App\Models\Kelas;
 use App\Models\Rombel;
 use App\Models\TahunAkademik;
+use App\Models\WaliKelas;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
@@ -35,6 +37,7 @@ class RombelResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
+            ->columns(3)
             ->schema([
                 Select::make('tahun_akademik_id')
                     ->label('Tahun Akademik')
@@ -48,18 +51,12 @@ class RombelResource extends Resource
                     ->getOptionLabelFromRecordUsing(fn($record) => "{$record->tahun_akademik_semester}")
                     ->required()
                     ->preload(),
-                Select::make('wali_kelas_id')
-                    ->label('Wali Kelas')
-                    ->relationship('waliKelas', 'id')
-                    ->getOptionLabelFromRecordUsing(fn($record) => $record->guru->nama ?? "-")
-                    ->required()
-                    ->preload(),
                 Select::make('kelas_id')
                     ->label('Kelas')
                     ->relationship('kelas', 'nama_kelas')
-                    ->getOptionLabelFromRecordUsing(fn($record) => "{$record->kode_kelas} - {$record->nama_kelas}")
                     ->required()
                     ->preload(),
+
                 Select::make('siswa_id')
                     ->label('Siswa')
                     ->relationship('siswa', 'nama')
@@ -76,7 +73,7 @@ class RombelResource extends Resource
                 TextColumn::make('index')
                     ->label('No.')
                     ->state(static function (HasTable $livewire, stdClass $rowLoop): string {
-                        return (string) (
+                        return (string)(
                             $rowLoop->iteration +
                             ($livewire->getTableRecordsPerPage() * ($livewire->getTablePage() - 1))
                         );
@@ -117,7 +114,7 @@ class RombelResource extends Resource
                     ->options(fn() => TahunAkademik::getListTahunAkademik())
                     ->default(fn() => TahunAkademik::getDefaultTahunAkademik())
                     ->query(function (Builder $query, array $data): Builder {
-                        if (! $data['value']) {
+                        if (!$data['value']) {
                             return $query;
                         }
 
@@ -135,7 +132,7 @@ class RombelResource extends Resource
                     ])
                     ->default('Ganjil')
                     ->query(function (Builder $query, array $data): Builder {
-                        if (! $data['value']) {
+                        if (!$data['value']) {
                             return $query;
                         }
 
@@ -167,23 +164,24 @@ class RombelResource extends Resource
 
                 SelectFilter::make('kelas')
                     ->label('Kelas')
-                    ->options(function () {
-                        return \App\Models\Kelas::query()
-                            ->select('kode_kelas')
-                            ->distinct()
-                            ->orderBy('kode_kelas', 'asc')
-                            ->pluck('kode_kelas', 'kode_kelas'); // key => label
-                    })
-                    ->default('X IPA')
-                    ->query(function (Builder $query, array $data): Builder {
-                        if (! $data['value']) {
-                            return $query;
-                        }
-
-                        return $query->whereHas('kelas', function ($q) use ($data) {
-                            $q->where('kode_kelas', $data['value']);
-                        });
-                    })
+                    ->relationship('kelas', 'nama_kelas')
+//                    ->options(function () {
+//                        return \App\Models\Kelas::query()
+//                            ->select('kode_kelas')
+//                            ->distinct()
+//                            ->orderBy('kode_kelas', 'asc')
+//                            ->pluck('kode_kelas', 'kode_kelas'); // key => label
+//                    })
+////                    ->default('X IPA')
+//                    ->query(function (Builder $query, array $data): Builder {
+//                        if (!$data['value']) {
+//                            return $query;
+//                        }
+//
+//                        return $query->whereHas('kelas', function ($q) use ($data) {
+//                            $q->where('kode_kelas', $data['value']);
+//                        });
+//                    })
                     ->searchable()
                     ->preload(),
             ], layout: FiltersLayout::AboveContent)
