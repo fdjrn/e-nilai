@@ -42,7 +42,20 @@ class Siswa extends Model
         return $this->hasMany(Rombel::class);
     }
 
-    public function getTempatTglLahirAttribute(): string {
+    public function getTempatTglLahirAttribute(): string
+    {
+        if ($this->tempat_lahir && $this->tgl_lahir) {
             return "{$this->tempat_lahir}, " . Carbon::parse($this->tgl_lahir)->translatedFormat('d M Y');
+        }
+
+        if ($this->tempat_lahir && !$this->tgl_lahir) {
+            return "{$this->tempat_lahir}, - ";
+        }
+
+        if (!$this->tempat_lahir && $this->tgl_lahir) {
+            return " - , " . Carbon::parse($this->tgl_lahir)->translatedFormat('d M Y');
+        }
+
+        return '-';
     }
 }
