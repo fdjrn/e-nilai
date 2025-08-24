@@ -278,6 +278,7 @@ class SiswaResource extends Resource
                     ->alignCenter(),
                 TextColumn::make('alamat')
                     ->label('Alamat')
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->wrap(),
                 TextColumn::make('tgl_masuk')
                     ->date(self::DATE_FORMAT)
