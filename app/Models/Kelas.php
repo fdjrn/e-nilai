@@ -84,7 +84,7 @@ class Kelas extends Model
     public static function getDefaultKelas()
     {
         return static::select('id','nama_kelas')
-            ->orderBy('nama_kelas', 'asc')
-            ->pluck('id','nama_kelas');
+            ->orderBy('nama_kelas')
+            ->first();
     }
 }
