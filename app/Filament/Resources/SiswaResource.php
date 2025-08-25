@@ -267,7 +267,6 @@ class SiswaResource extends Resource
                     ->sortable(),
                 TextColumn::make('tempat_tgl_lahir')
                     ->label('Tempat, Tgl. Lahir')
-                    ->searchable()
                     ->sortable(
                         query: fn($query, $direction) =>
                         $query->orderByRaw("CONCAT(tempat_lahir, ' ', tgl_lahir) {$direction}")
