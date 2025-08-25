@@ -38,12 +38,12 @@ class CreateRombel extends CreateRecord
             if (isset($e->errorInfo[1]) && $e->errorInfo[1] === 1062) {
                 Notification::make()
                     ->title('Duplikasi Data')
-                    ->body('Siswa sudah terdaftar pada Rombongan Belajar yang dipilih.')
+                    ->body('Siswa sudah terdaftar pada rombongan belajar tertentu')
                     ->danger()
                     ->send();
 
                 throw ValidationException::withMessages([
-                    'err' => 'Siswa sudah terdaftar pada Rombongan Belajar yang dipilih.',
+                    'err' => 'Siswa sudah terdaftar pada rombongan belajar tertentu',
                 ]);
             }
 
